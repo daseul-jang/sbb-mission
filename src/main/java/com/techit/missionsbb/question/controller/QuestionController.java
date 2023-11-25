@@ -7,25 +7,57 @@ import com.techit.missionsbb.question.dto.QuestionRequestDto;
 import com.techit.missionsbb.question.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/question")
 public class QuestionController {
     private final QuestionService questionService;
 
-    @GetMapping("/list")
+    @GetMapping("/test")
+    public ResponseEntity<?> addTestDate() {
+        // list 호출 시 더미데이터 생성
+        questionService.deleteDummyData();
+        questionService.insertDummyData(200);
+        return ResponseEntity.ok("데이터추가완.");
+    }
+
+    /*@GetMapping("/list")
     public ResponseEntity<?> list() {
+        // list 호출 시 더미데이터 생성
+        questionService.deleteDummyData();
+        questionService.insertDummyData(30);
         ResponseDto<QuestionDto> response;
         try {
             List<Question> questionEntities = questionService.getList();
             List<QuestionDto> questionDtos = questionEntities.stream().map(QuestionDto::new).toList();
             response = ResponseDto.<QuestionDto>builder().listData(questionDtos).build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(response);
+        }
+    }*/
+
+    // 페이징
+    @GetMapping("/list")
+    public ResponseEntity<?> list(Pageable pageable) {
+        log.info(pageable);
+        ResponseDto<QuestionDto> response;
+        try {
+            Page<Question> questionEntities = questionService.getPageList(pageable);
+            List<QuestionDto> questionDtos = questionEntities.stream().map(QuestionDto::new).toList();
+            Page<QuestionDto> questionPageList = new PageImpl<>(questionDtos, pageable, questionEntities.getTotalElements());
+            response = ResponseDto.<QuestionDto>builder().pageData(questionPageList).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();

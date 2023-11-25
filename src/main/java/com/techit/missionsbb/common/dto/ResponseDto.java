@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class ResponseDto<T> {
     private String error;
     private List<T> listData;
+    private Page<T> pageData;
     private T objData;
 
     public ResponseDto(List<T> list) {

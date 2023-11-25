@@ -6,17 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 public class QuestionDto {
     private Integer id;
     private String subject;
     private String content;
+    private LocalDateTime createDate;
 
     @Builder
-    public QuestionDto(Integer id, String subject, String content) {
+    public QuestionDto(Integer id, String subject, String content, LocalDateTime createDate) {
         this.id = id;
         this.subject = subject;
         this.content = content;
+        this.createDate = createDate;
     }
 
     public QuestionDto(final QuestionRequestDto dto) {
@@ -28,6 +32,7 @@ public class QuestionDto {
         this.id = entity.getId();
         this.subject = entity.getSubject();
         this.content = entity.getContent();
+        this.createDate = entity.getCreateDate();
     }
 
     public static Question toEntity(final QuestionDto dto) {
