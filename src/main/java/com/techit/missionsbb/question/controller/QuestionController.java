@@ -27,28 +27,26 @@ public class QuestionController {
     public ResponseEntity<?> addTestDate() {
         // list 호출 시 더미데이터 생성
         questionService.deleteDummyData();
-        questionService.insertDummyData(200);
+        questionService.insertDummyData(305);
         return ResponseEntity.ok("데이터추가완.");
     }
 
-    /*@GetMapping("/list")
-    public ResponseEntity<?> list() {
-        // list 호출 시 더미데이터 생성
-        questionService.deleteDummyData();
-        questionService.insertDummyData(30);
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
         ResponseDto<QuestionDto> response;
         try {
-            List<Question> questionEntities = questionService.getList();
-            List<QuestionDto> questionDtos = questionEntities.stream().map(QuestionDto::new).toList();
-            response = ResponseDto.<QuestionDto>builder().listData(questionDtos).build();
+            Question questionEntity = questionService.getQuestion(id);
+            response = ResponseDto.<QuestionDto>builder().objData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.ok(response);
         }
-    }*/
+    }
 
-    // 페이징
+    /**
+     * 페이지네이션 리스트 요청
+     */
     @GetMapping("/list")
     public ResponseEntity<?> list(Pageable pageable) {
         log.info(pageable);
@@ -69,8 +67,8 @@ public class QuestionController {
     public ResponseEntity<?> register(@Valid @RequestBody QuestionRequestDto reqDto) {
         ResponseDto<QuestionDto> response;
         try {
-            Question questionEntitiy = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto)));
-            response = ResponseDto.<QuestionDto>builder().objData(new QuestionDto(questionEntitiy)).build();
+            Question questionEntity = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto)));
+            response = ResponseDto.<QuestionDto>builder().objData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();

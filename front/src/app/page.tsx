@@ -1,8 +1,8 @@
 import BoardList from '@/components/BoardList';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <section className='w-full flex flex-col p-4 bg-white mt-14 rounded-xl'>
+    <section className='mt-10 h-full'>
       <BoardList />
     </section>
   );

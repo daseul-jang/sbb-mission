@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import LastPageIcon from './ui/icon/LastPageIcon';
-import NextIcon from './ui/icon/NextIcon';
-import PrevIcon from './ui/icon/PrevIcon';
-import FirstPageIcon from './ui/icon/FirstPageIcon';
+import LastPageIcon from './icon/LastPageIcon';
+import NextIcon from './icon/NextIcon';
+import PrevIcon from './icon/PrevIcon';
+import FirstPageIcon from './icon/FirstPageIcon';
+import PageButton from './button/PageButton';
 
 type PaginationProps = {
   totalPages: number;
@@ -16,10 +16,8 @@ export default function Pagination({
   onPageChange,
 }: PaginationProps) {
   const pagesToShow = 5;
-
   let startPage = Math.max(0, currentPage - Math.floor(pagesToShow / 2));
   let endPage = Math.min(totalPages - 1, startPage + pagesToShow - 1);
-
   const pages = [...Array(endPage - startPage + 1).keys()].map(
     (i) => startPage + i
   );
@@ -42,47 +40,38 @@ export default function Pagination({
 
   return (
     <div className='join'>
-      <button
-        className={`join-item btn btn-sm ${currentPage === 0 && 'btn-active'}`}
+      <PageButton
+        btnType='start'
+        cond={currentPage === 0}
         onClick={() => onPageChange(0)}
       >
         <FirstPageIcon />
-      </button>
-      <button
-        className={`join-item btn btn-sm ${
-          startPage === currentPage && 'btn-active'
-        }`}
-        onClick={handlePrevPage}
-      >
+      </PageButton>
+      <PageButton cond={startPage === currentPage} onClick={handlePrevPage}>
         <PrevIcon />
-      </button>
+      </PageButton>
       {pages.map((page) => (
-        <button
+        <PageButton
           key={page}
-          className={`join-item btn btn-sm ${
-            page === currentPage && 'btn-active'
-          }`}
+          cond={page === currentPage}
           onClick={() => onPageChange(page)}
         >
           {page + 1}
-        </button>
+        </PageButton>
       ))}
-      <button
-        className={`join-item btn btn-sm ${
-          currentPage === totalPages - 1 && 'btn-active'
-        }`}
+      <PageButton
+        cond={currentPage === totalPages - 1}
         onClick={handleNextPage}
       >
         <NextIcon />
-      </button>
-      <button
-        className={`join-item btn btn-sm ${
-          currentPage === totalPages - 1 && 'btn-active'
-        }`}
+      </PageButton>
+      <PageButton
+        btnType='end'
+        cond={currentPage === totalPages - 1}
         onClick={() => onPageChange(totalPages - 1)}
       >
         <LastPageIcon />
-      </button>
+      </PageButton>
     </div>
   );
 }

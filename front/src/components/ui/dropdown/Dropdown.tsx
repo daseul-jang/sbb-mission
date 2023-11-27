@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavbarType } from '@/types/customTypes';
-import NotificationMenu from '@/components/NotificationMenu';
-import AvatarMenu from '@/components/AvatarMenu';
+import NotificationMenu from '@/components/ui/dropdown/NotificationMenu';
+import AvatarMenu from '@/components/ui/dropdown/AvatarMenu';
 import NavbarButton from '../button/NavbarButton';
 import NotificationIcon from '../icon/NotificationIcon';
 import AvatarIcon from '../icon/AvatarIcon';

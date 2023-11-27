@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
 import axios from '@/config/axios-config';
+import { useQuery } from '@tanstack/react-query';
 
 const fetchQuestions = async (page: number, size: number) => {
-  const {
-    data: { listData },
-  } = await axios.get(`/?page=${page}&size=${size}`);
+  const { data: questionData } = await axios.get(
+    `/questions?page=${page}&size=${size}`
+  );
 
-  return listData;
+  return questionData;
 };
 
 export default function useQuestions(page: number, size: number) {
@@ -14,22 +14,11 @@ export default function useQuestions(page: number, size: number) {
     data: questions,
     isLoading,
     isError,
-    error,
+    error: queryError,
   } = useQuery({
     queryKey: ['questions', page, size],
     queryFn: () => fetchQuestions(page, size),
   });
 
-  return { questions, isLoading, isError, error };
+  return { questions, isLoading, isError, queryError };
 }
-
-export const useTestData = () => {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['testData'],
-    queryFn: async () => {
-      const res = await fetch('/add-test-data');
-      console.log(res);
-      return res;
-    },
-  });
-};
