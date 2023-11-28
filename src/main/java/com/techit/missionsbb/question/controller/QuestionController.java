@@ -32,7 +32,7 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> detail(@PathVariable("id") int id) {
         ResponseDto<QuestionDto> response;
         try {
             Question questionEntity = questionService.getQuestion(id);

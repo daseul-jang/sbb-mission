@@ -8,4 +8,11 @@ const instance = axios.create({
   },
 });
 
+export const unsplashAxios = axios.create({
+  baseURL: 'https://api.unsplash.com/photos',
+  headers: {
+    Authorization: `Client-ID ${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`,
+  },
+});
+
 export default instance;

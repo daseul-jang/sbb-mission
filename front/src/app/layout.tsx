@@ -27,7 +27,7 @@ export default function RootLayout({
               <Navbar />
             </div>
           </header>
-          <main className='w-full max-w-screen-md mx-auto'>{children}</main>
+          <main className=''>{children}</main>
         </ReactQueryProvider>
       </body>
     </html>

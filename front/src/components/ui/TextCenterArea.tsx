@@ -4,6 +4,8 @@ export default function TextCenterArea({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex justify-center items-center h-[698px]'>{children}</div>
+    <div className='flex justify-center items-center min-h-screen -mt-[67px]'>
+      {children}
+    </div>
   );
 }

@@ -1,8 +1,8 @@
-import BoardList from '@/components/BoardList';
+import BoardList from '@/components/board/BoardList';
 
 export default function HomePage() {
   return (
-    <section className='mt-10 h-full'>
+    <section className='h-full max-w-screen-md mx-auto'>
       <BoardList />
     </section>
   );

@@ -1,7 +1,9 @@
+import TextCenterArea from '../TextCenterArea';
+
 export default function LoadingSpinnerCircle() {
   return (
-    <div className='flex justify-center items-center min-h-[450px]'>
+    <TextCenterArea>
       <span className='loading loading-spinner loading-lg text-warning'></span>
-    </div>
+    </TextCenterArea>
   );
 }

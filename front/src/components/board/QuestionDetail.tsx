@@ -1,10 +1,10 @@
 'use client';
 
 import useQuestion from '@/hooks/question';
-import LoadingSpinner from './ui/icon/LoadingSpinnerCircle';
+import LoadingSpinner from '../ui/icon/LoadingSpinnerCircle';
 import { getDate } from './BoardList';
 import { useRouter } from 'next/navigation';
-import Button from './ui/button/Button';
+import Button from '../ui/button/Button';
 
 type Props = {
   id: string;

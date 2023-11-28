@@ -32,7 +32,7 @@ public class QuestionService {
 
     @Transactional
     public void deleteDummyData() {
-        questionRepository.deleteAll();
+        if (!getList().isEmpty()) questionRepository.deleteAll();
     }
 
     /**

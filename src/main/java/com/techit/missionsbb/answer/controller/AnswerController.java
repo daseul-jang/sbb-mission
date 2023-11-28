@@ -30,7 +30,7 @@ public class AnswerController {
     }*/
 
     @PostMapping("/register/{id}")
-    public ResponseEntity<?> createAnswer(@PathVariable("id") Integer id, @RequestBody String content) {
+    public ResponseEntity<?> createAnswer(@PathVariable("id") int id, @RequestBody String content) {
         log.info("id: {}", id);
         log.info("content: {}", content);
         ResponseDto<AnswerDto> response;

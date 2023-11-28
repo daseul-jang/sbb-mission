@@ -2,7 +2,7 @@
 
 import useWrite from '@/hooks/questionWrite';
 import { useEffect, useRef, useState } from 'react';
-import LoadingSpinnerCircle from './ui/icon/LoadingSpinnerCircle';
+import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter } from 'next/navigation';
 
 export default function QuestionWrite() {

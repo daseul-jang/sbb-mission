@@ -1,11 +1,7 @@
 import { addAnswer } from '@/service/answer';
 import { NextRequest, NextResponse } from 'next/server';
 
-type Context = {
-  params: { id: string };
-};
-
-export async function POST(req: NextRequest, context: Context) {
+export async function POST(req: NextRequest) {
   const { id, content } = await req.json();
 
   return addAnswer(id, content)

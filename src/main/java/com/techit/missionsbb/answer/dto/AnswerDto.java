@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnswerDto {
-    private Integer id;
+    private int id;
     private String content;
     private Question question;
     private LocalDateTime createDate;
@@ -32,7 +32,6 @@ public class AnswerDto {
 
     public static Answer toEntity(final AnswerDto dto) {
         return Answer.builder()
-                .id(dto.getId())
                 .content(dto.getContent())
                 .question(dto.getQuestion())
                 .build();

@@ -6,35 +6,26 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.techit.missionsbb.common.domain.DateEntity;
 import com.techit.missionsbb.question.domain.Question;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
-/*@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")*/
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "answer_tb")
 public class Answer extends DateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Question question;
-
-    @Builder
-    public Answer(Integer id, String content, Question question) {
-        this.id = id;
-        this.content = content;
-        this.question = question;
-    }
 }

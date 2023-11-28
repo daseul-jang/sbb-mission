@@ -1,5 +1,5 @@
-import AnswerArea from '@/components/AnswerArea';
-import QuestionDetail from '@/components/QuestionDetail';
+import AnswerArea from '@/components/board/AnswerArea';
+import QuestionDetail from '@/components/board/QuestionDetail';
 import DetailSection from '@/components/ui/DetailSection';
 
 type Props = {

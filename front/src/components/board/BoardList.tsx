@@ -3,10 +3,10 @@
 import { useEffect } from 'react';
 import useQuestions from '@/hooks/questions';
 import { Question } from '@/model/question';
-import Pagination from './ui/Pagination';
-import LoadingSpinnerCircle from './ui/icon/LoadingSpinnerCircle';
-import TextCenterArea from './ui/TextCenterArea';
+import Pagination from '../ui/Pagination';
+import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter, useSearchParams } from 'next/navigation';
+import CommonException from '../error/CommonException';
 
 export default function BoardList() {
   const router = useRouter();
@@ -36,21 +36,26 @@ export default function BoardList() {
   }
 
   if (isError || queryError) {
-    return <TextCenterArea>에러!!!!</TextCenterArea>;
+    return <CommonException msg='잘못된 요청입니다 😅' />;
   }
 
-  const { error, pageData } = questions?.questionData;
+  const { error, pageData } = questions;
+  console.log(questions);
 
   if (error) {
-    return <TextCenterArea>{error}</TextCenterArea>;
+    return <CommonException msg={error} />;
   }
+
+  /* if (questions.questionData.cause) {
+    return <CommonException cause={questions.questionData.cause} />;
+  } */
 
   const handlePageChange = (page: number) => {
     router.push(`/?page=${page}&size=10`);
   };
 
   return (
-    <div className='flex flex-col gap-3 px-3'>
+    <div className='flex flex-col gap-3 px-3 mt-10'>
       <div className='flex justify-between'>
         <h1 className='flex items-center text-2xl font-bold px-3'>
           🙋‍♀️ 질문있어요!
@@ -70,7 +75,7 @@ export default function BoardList() {
               </tr>
             </thead>
             <tbody>
-              {pageData.content.map((question: Question) => (
+              {pageData?.content.map((question: Question) => (
                 <tr key={question.id} className='hover'>
                   <td className='text-center text-sm text-neutral-500 border-r'>
                     {question.id}

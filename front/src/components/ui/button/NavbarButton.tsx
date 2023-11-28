@@ -12,7 +12,7 @@ export default function NavbarButton({
   return (
     <button
       tabIndex={0}
-      className={`btn btn-ghost btn-circle ${
+      className={`btn btn-ghost btn-circle hover:bg-amber-500 hover:text-white ${
         type === 'avatar' && 'avatar mx-3'
       }`}
       onClick={handleToggleDropdown}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useAnswer from '@/hooks/answer';
-import Button from './ui/button/Button';
+import Button from '../ui/button/Button';
 
 export default function AnswerForm({ id }: { id: string }) {
   const [content, setContent] = useState('');
@@ -24,7 +24,7 @@ export default function AnswerForm({ id }: { id: string }) {
         onChange={(e) => setContent(e.target.value)}
       ></textarea>
       <div className='flex justify-end'>
-        <Button>댓글 등록</Button>
+        <Button>답변 등록</Button>
       </div>
     </form>
   );
