@@ -6,6 +6,9 @@ import com.techit.missionsbb.question.domain.Question;
 import com.techit.missionsbb.question.dto.QuestionDto;
 import com.techit.missionsbb.question.dto.QuestionRequestDto;
 import com.techit.missionsbb.question.service.QuestionService;
+import com.techit.missionsbb.user.domain.User;
+import com.techit.missionsbb.user.security.service.UserPrincipal;
+import com.techit.missionsbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.List;
 @RequestMapping("/question")
 public class QuestionController {
     private final QuestionService questionService;
+    private final UserService userService;
 
     @GetMapping("/test")
     public ResponseEntity<?> addTestDate() {
@@ -65,13 +70,17 @@ public class QuestionController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody QuestionRequestDto reqDto) {
+    public ResponseEntity<?> register(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody QuestionRequestDto reqDto) {
+        log.info("question register username: {}", userPrincipal.getUsername());
         ResponseDto<QuestionDto> response;
         try {
-            Question questionEntity = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto)));
+            User userEntity = userService.getUser(userPrincipal.getUsername());
+            Question questionEntity = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto, userEntity)));
+            log.info("question register questionEntity username: {}", questionEntity.getAuthor().getUsername());
             response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.info(e.getMessage());
             response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-333, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }

@@ -12,9 +12,6 @@ const fetchWrite = async ({ subject, content }: ReqQuestion) => {
 };
 
 export const useQuestionWrite = ({ subject, content }: ReqQuestion) => {
-  console.log('useWrite');
-  console.log({ subject, content });
-
   const queryClient = useQueryClient();
   const { mutate: submitQuestion, isPending } = useMutation({
     mutationFn: () => fetchWrite({ subject, content }),

@@ -3,7 +3,9 @@ package com.techit.missionsbb.question.service;
 import com.techit.missionsbb.common.exception.DataNotFoundException;
 import com.techit.missionsbb.question.domain.Question;
 import com.techit.missionsbb.question.repository.QuestionRepository;
+import com.techit.missionsbb.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,6 +26,7 @@ public class QuestionService {
         for (int i = 1; i <= limit; i++) {
             Question question = Question.builder()
                     .subject("제목 테스트 " + i)
+                    .author(User.builder().username("tester" + i).build())
                     .content("내용 테스트 " + i)
                     .build();
 
@@ -65,6 +69,7 @@ public class QuestionService {
 
     @Transactional
     public Question create(final Question question) {
+        log.info("question create: {}", question.getAuthor().getUsername());
         return questionRepository.save(question);
     }
 }

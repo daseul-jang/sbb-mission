@@ -22,7 +22,7 @@ export default function QuestionDetail({ id }: Props) {
       <div className='basis-1/4 flex flex-col gap-3 justify-center p-4 border-b border-gray-300'>
         <p className='text-3xl font-bold'>{question.subject}</p>
         <div className='flex flex-row gap-2 px-1 text-sm text-gray-600'>
-          <span>이름</span>
+          <span>{question.author.username}</span>
           <span>·</span>
           <span>{getDate(question.createDate)}</span>
         </div>

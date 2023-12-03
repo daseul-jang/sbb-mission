@@ -30,6 +30,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user }) {
+      const { id, username, email, createDate } = user?.user;
+
+      if (!username) {
+        return false;
+      }
+
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.user = {
@@ -41,7 +50,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       session.user = { ...token?.user };
       return session;
     },

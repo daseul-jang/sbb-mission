@@ -73,8 +73,9 @@ export default function BoardList() {
           <table className='table border-t-2 border-b'>
             <thead className='border-b-2'>
               <tr className='text-center'>
-                <th className='w-2/12 border-r'>번호</th>
-                <th className='w-8/12 px-3'>제목</th>
+                <th className='w-1/12 border-r'>번호</th>
+                <th className='w-7/12 px-3'>제목</th>
+                <th className='w-2/12 border-l'>작성자</th>
                 <th className='w-2/12 border-l'>날짜</th>
               </tr>
             </thead>
@@ -97,6 +98,9 @@ export default function BoardList() {
                     <span className='badge badge-sm badge-outline badge-warning text-xs'>
                       {question.answerList?.length}
                     </span>
+                  </td>
+                  <td className='text-center text-neutral-500 border-l'>
+                    {question.author.username}
                   </td>
                   <td className='text-center text-neutral-500 border-l'>
                     {getDate(question.createDate || '')}

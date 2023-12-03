@@ -5,6 +5,8 @@ export interface BaseUser {
   passwordCheck?: string;
   email?: string;
   createDate?: string;
+  updateDate?: string;
+  role?: string;
 }
 
 export interface AuthUser {

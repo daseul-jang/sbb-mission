@@ -2,6 +2,7 @@ package com.techit.missionsbb.question.dto;
 
 import com.techit.missionsbb.answer.domain.Answer;
 import com.techit.missionsbb.question.domain.Question;
+import com.techit.missionsbb.user.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,18 +15,21 @@ import java.util.List;
 public class QuestionDto {
     private int id;
     private String subject;
+    private User author;
     private String content;
     private LocalDateTime createDate;
     private List<Answer> answerList;
 
-    public QuestionDto(final QuestionRequestDto dto) {
+    public QuestionDto(final QuestionRequestDto dto, User user) {
         this.subject = dto.getSubject();
+        this.author = user;
         this.content = dto.getContent();
     }
 
     public QuestionDto(final Question entity) {
         this.id = entity.getId();
         this.subject = entity.getSubject();
+        this.author = entity.getAuthor();
         this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
         this.answerList = entity.getAnswerList();
@@ -34,6 +38,7 @@ public class QuestionDto {
     public static Question toEntity(final QuestionDto dto) {
         return Question.builder()
                 .subject(dto.getSubject())
+                .author(dto.getAuthor())
                 .content(dto.getContent())
                 .answerList(dto.getAnswerList())
                 .build();

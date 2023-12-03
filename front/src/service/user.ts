@@ -1,5 +1,7 @@
 import { LoginInfo, SignupInfo } from '@/model/user';
-import { loginFetch, postFetch } from '@/config/fetch-config';
+import { postFetch } from '@/config/fetch-config';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const USER_URL = 'http://localhost:8080/user';
 const AUTH_URL = 'http://localhost:8080/auth';
@@ -10,16 +12,29 @@ const FETCH_OPTION: RequestInit = {
   cache: 'no-store',
 };
 
-export const getNewAccessToken = async (refreshToken: string) => {
-  try {
-    const data = await fetch(`${AUTH_URL}/reissue-access-token`, {
-      ...FETCH_OPTION,
-      method: 'POST',
-      body: refreshToken,
-    }).then((res) => res.json());
+export const getNewAccessToken = async () => {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
 
-    return data;
-  } catch (err) {}
+  try {
+    const res = await fetch(`${AUTH_URL}/reissue-access-token`, {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      method: 'POST',
+      body: user?.refreshToken,
+    });
+
+    const { objectData } = await res.json();
+
+    if (user) {
+      user.accessToken = objectData.accessToken;
+    }
+
+    return user;
+  } catch (err) {
+    throw new Error('토큰 발급 실패');
+  }
 };
 
 export const userLogin = async (

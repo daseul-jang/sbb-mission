@@ -27,11 +27,13 @@ export default function Navbar() {
           <SearchIcon />
         </NavbarButton>
         <Dropdown type='notification' />
-        <Dropdown type='avatar' />
         {session ? (
-          <button className='btn text-sm' onClick={() => signOut()}>
-            로그아웃
-          </button>
+          <>
+            <Dropdown type='avatar' />
+            <button className='btn text-sm' onClick={() => signOut()}>
+              로그아웃
+            </button>
+          </>
         ) : (
           <button className='btn text-sm' onClick={() => signIn()}>
             로그인/가입

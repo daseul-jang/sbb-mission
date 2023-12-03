@@ -1,15 +1,12 @@
 package com.techit.missionsbb.question.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.techit.missionsbb.answer.domain.Answer;
 import com.techit.missionsbb.common.domain.DateEntity;
+import com.techit.missionsbb.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,6 +22,9 @@ public class Question extends DateEntity {
 
     @Column(length = 200)
     private String subject;
+
+    @ManyToOne
+    private User author;
 
     @Column(columnDefinition = "TEXT")
     private String content;

@@ -12,8 +12,6 @@ export default function AnswerArea({ id }: { id: string }) {
     return <></>;
   }
 
-  console.log(question.answerList);
-
   return (
     <div className='flex flex-col gap-8 p-4 my-12 h-ull'>
       <div className='flex flex-col gap-3'>

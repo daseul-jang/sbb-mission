@@ -60,6 +60,7 @@ public class AuthService {
     }
 
     public JwtAuthResponseDto newAccessToken(String requestRefreshToken) {
+        log.info("newAccessToken");
         if (!tokenProvider.validateToken(requestRefreshToken)) {
             throw new RuntimeException("Refresh Token 검증 실패");
         }
@@ -67,8 +68,8 @@ public class AuthService {
         Authentication authentication = tokenProvider.getAuthentication(requestRefreshToken);
         User user = userService.getUser(authentication.getName());
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user).orElse(null);
-
         assert refreshToken != null;
+        log.info(refreshToken.toString());
         if (!refreshToken.getToken().equals(requestRefreshToken)) {
             throw new RuntimeException("토큰이 일치하지 않습니다.");
         }
