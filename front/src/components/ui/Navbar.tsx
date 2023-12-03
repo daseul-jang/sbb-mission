@@ -4,10 +4,14 @@ import NavbarButton from './button/NavbarButton';
 import SearchIcon from './icon/SearchIcon';
 import Dropdown from './dropdown/Dropdown';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  console.log(session);
+
   return (
     <nav className='navbar bg-base-100'>
       <div className='flex-1'>
@@ -24,7 +28,15 @@ export default function Navbar() {
         </NavbarButton>
         <Dropdown type='notification' />
         <Dropdown type='avatar' />
-        <Link href='/user/signin' className='btn text-sm'>로그인 / 가입</Link>
+        {session ? (
+          <button className='btn text-sm' onClick={() => signOut()}>
+            로그아웃
+          </button>
+        ) : (
+          <button className='btn text-sm' onClick={() => signIn()}>
+            로그인/가입
+          </button>
+        )}
       </div>
     </nav>
   );

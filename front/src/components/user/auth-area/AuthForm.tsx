@@ -3,48 +3,41 @@
 
 import { useState } from 'react';
 import GreenCheckIcon from '@/components/ui/icon/GreenCheckIcon';
-import { AuthType } from './AuthArea';
-import Link from 'next/link';
-//import AuthInput from '@/components/ui/form/AuthInput';
+import { AuthProps } from './AuthArea';
+import RememberMe from './RememberMe';
+import FindPassword from './FindPassword';
+import AuthInputArea from '@/components/user/auth-area/AuthInputArea';
+import AuthBottom from './AuthBottom';
+import { useSignup } from '@/hooks/user';
+import { LoginInfo, SignupInfo } from '@/model/user';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
-type SigninUser = {
-  username: string;
-  password: string;
-};
+interface inputType {
+  signin: LoginInfo;
+  signup: SignupInfo;
+}
 
-type SignupUser = SigninUser & {
-  email: string;
-};
-
-type AuthUserMap = {
-  [key: string]: SigninUser | SignupUser;
-};
-
-type Props = {
-  authType: AuthType;
-};
-
-const init: AuthUserMap = {
+const userInput: inputType = {
   signin: {
-    username: '',
-    password: '',
+    username: 'test1',
+    password: '1234',
   },
   signup: {
-    username: '',
-    password: '',
-    email: '',
+    username: 'test1',
+    password: '1234',
+    passwordCheck: '1234',
+    email: 'test1@test.com',
   },
 };
 
-export default function AuthForm({ authType }: Props) {
-  console.log(authType);
+export default function AuthForm({ auth }: AuthProps) {
+  console.log(auth);
+  const router = useRouter();
+  const type = userInput[auth];
 
-  const type = init[authType];
-  console.log(type);
-
-  const [user, setUser] = useState<SigninUser | SignupUser>(type);
-  const [passwordCheck, setPasswordCheck] = useState('');
-  console.log(user);
+  const [user, setUser] = useState<LoginInfo | SignupInfo>(type);
+  const { submitSignup, isPending } = useSignup(user);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
@@ -53,117 +46,78 @@ export default function AuthForm({ authType }: Props) {
     });
   };
 
+  const handleAuthSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (auth === 'signin') {
+      console.log('handleSubmitSignup signin');
+      console.log(user);
+      await signIn('credentials', {
+        ...user,
+        redirect: true,
+        callbackUrl: '/',
+      });
+    } else if (auth === 'signup') {
+      submitSignup();
+      router.push('/user/signin');
+    }
+  };
+
   return (
-    <form className='mt-8 space-y-6' action='#' method='POST'>
-      <input type='hidden' name='remember' value='true' />
+    <form className='mt-8 space-y-6' onSubmit={handleAuthSubmit}>
       <div className='relative'>
         <div className='absolute right-0 mt-4'>
           <GreenCheckIcon />
         </div>
-        {/* <AuthInput
-          title='email'
+        <AuthInputArea
           type='text'
-          user={user}
-          onChage={handleOnChange}
-        /> */}
-        <label className='text-sm font-bold text-gray-700 tracking-wide'>
-          아이디
-        </label>
-        <input
-          className='w-full text-base py-2 border-b border-gray-300 focus:outline-none focus:border-amber-400'
-          type='text'
+          title='아이디'
           name='username'
-          placeholder='아이디를 입력해 주세요'
-          value={user.username}
+          value={user?.username}
+          placeholder='아이디 입력'
           onChange={handleOnChange}
         />
       </div>
       <div className='mt-8 content-center'>
-        <label className='text-sm font-bold text-gray-700 tracking-wide'>
-          비밀번호
-        </label>
-        <input
-          className='w-full content-center text-base py-2 border-b border-gray-300 focus:outline-none focus:border-amber-400'
+        <AuthInputArea
           type='password'
+          title='비밀번호'
           name='password'
-          placeholder='비밀번호를 입력해 주세요.'
-          value={user.password}
+          value={user?.password}
+          placeholder='비밀번호 입력'
           onChange={handleOnChange}
         />
       </div>
-      {authType === 'signup' && 'email' in user ? (
+      {auth === 'signup' && 'email' in user ? (
         <>
           <div className='mt-8 content-center'>
-            <label className='text-sm font-bold text-gray-700 tracking-wide'>
-              비밀번호 확인
-            </label>
-            <input
-              className='w-full content-center text-base py-2 border-b border-gray-300 focus:outline-none focus:border-amber-400'
+            <AuthInputArea
               type='password'
-              placeholder='비밀번호를 입력해 주세요.'
-              value={passwordCheck}
-              onChange={(e) => setPasswordCheck(e.target.value)}
+              name='passwordCheck'
+              title='비밀번호 확인'
+              value={user.passwordCheck || ''}
+              placeholder='동일한 비밀번호 입력'
+              onChange={handleOnChange}
             />
           </div>
           <div className='mt-8 content-center'>
-            <label className='text-sm font-bold text-gray-700 tracking-wide'>
-              이메일
-            </label>
-            <input
-              className='w-full content-center text-base py-2 border-b border-gray-300 focus:outline-none focus:border-amber-400'
+            <AuthInputArea
               type='email'
+              title='이메일'
               name='email'
-              placeholder='이메일을 입력해 주세요.'
-              value={user.email}
+              value={user.email || ''}
+              placeholder='이메일 입력'
               onChange={handleOnChange}
             />
           </div>
         </>
       ) : (
         <div className='flex items-center justify-between'>
-          <div className='flex items-center'>
-            <input
-              id='remember_me'
-              name='remember_me'
-              type='checkbox'
-              className='h-4 w-4 bg-indigo-500 focus:ring-indigo-400 border-gray-300 rounded'
-            />
-            <label
-              htmlFor='remember_me'
-              className='ml-2 block text-sm text-gray-900'
-            >
-              Remember me
-            </label>
-          </div>
-          <div className='text-sm'>
-            <a
-              href='#'
-              className='font-medium text-amber-400 hover:text-amber-500'
-            >
-              비밀번호 찾기
-            </a>
-          </div>
+          <RememberMe />
+          <FindPassword />
         </div>
       )}
-      <div className='mt-4'>
-        <button
-          type='submit'
-          className='w-full flex justify-center bg-amber-500 text-gray-100 p-4  rounded-full tracking-wide font-semibold  focus:outline-none focus:shadow-outline hover:bg-amber-400 shadow-lg cursor-pointer transition ease-in duration-300'
-        >
-          {authType === 'signin' ? '로그인' : '가입하기'}
-        </button>
-      </div>
-      <p className='flex flex-col items-center justify-center gap-1 mt-10 text-center text-sm text-gray-500'>
-        <span>
-          {authType === 'signin' ? '회원이 아니신가요?' : '이미 회원이신가요?'}
-        </span>
-        <Link
-          href='/user/signup'
-          className='text-sm text-amber-400 hover:text-amber-500 no-underline hover:underline cursor-pointer transition ease-in duration-300'
-        >
-          {authType === 'signin' ? '가입하기' : '로그인하기'}
-        </Link>
-      </p>
+      <AuthBottom auth={auth} />
     </form>
   );
 }

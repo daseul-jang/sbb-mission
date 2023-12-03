@@ -6,12 +6,6 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Number(searchParams.get('page'));
   const size = Number(searchParams.get('size'));
-  console.log(page);
-
-  /* const questionData = await getQuestionList(page, size);
-  //console.log(questionData);
-
-  return NextResponse.json({ questionData }, { status: 200 }); */
 
   return getQuestionList(page, size)
     .then((res) => NextResponse.json(res))

@@ -1,6 +1,6 @@
 'use client';
 
-import useWrite from '@/hooks/questionWrite';
+import { useQuestionWrite } from '@/hooks/question';
 import { useEffect, useRef, useState } from 'react';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ export default function QuestionWrite() {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [post, setPost] = useState({ subject: '', content: '' });
-  const { submitQuestion, isPending } = useWrite(post);
+  const { submitQuestion, isPending } = useQuestionWrite(post);
 
   useEffect(() => {
     if (textareaRef.current) {

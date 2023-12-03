@@ -2,6 +2,4 @@
 spring:
   profiles:
     group:
-      dev: db-dev
-    include:
-      - db
+      dev: db-dev, app

@@ -1,18 +1,14 @@
 'use client';
 
-import useQuestion from '@/hooks/question';
+import { useQuestion } from '@/hooks/question';
 import LoadingSpinner from '../ui/icon/LoadingSpinnerCircle';
 import { getDate } from './BoardList';
-import { useRouter } from 'next/navigation';
-import Button from '../ui/button/Button';
 
-type Props = {
+interface Props {
   id: string;
-};
+}
 
 export default function QuestionDetail({ id }: Props) {
-  const router = useRouter();
-
   const { question, isLoading, isError, error } = useQuestion(id);
 
   if (isLoading) {
@@ -34,9 +30,6 @@ export default function QuestionDetail({ id }: Props) {
       <div className='basis-3/4 flex flex-col p-5 h-full'>
         {question.content}
       </div>
-      {/* <div className='basis-1/12 flex items-center justify-end'>
-        <Button onClick={() => router.back()}>목록으로</Button>
-      </div> */}
     </div>
   );
 }

@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import useQuestions from '@/hooks/questions';
+import { useQuestions } from '@/hooks/question';
 import { Question } from '@/model/question';
 import Pagination from '../ui/Pagination';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CommonException from '../error/CommonException';
+import WriteButton from '../ui/button/WriteButton';
 
 export default function BoardList() {
   const router = useRouter();
@@ -39,16 +40,21 @@ export default function BoardList() {
     return <CommonException msg='잘못된 요청입니다 😅' />;
   }
 
-  const { error, pageData } = questions;
+  const { errorData, pageData } = questions;
   console.log(questions);
 
-  if (error) {
-    return <CommonException msg={error} />;
+  if (errorData?.errorCode) {
+    return (
+      <CommonException
+        msg={errorData.errorMessage}
+        code={errorData.errorCode}
+      />
+    );
   }
 
-  /* if (questions.questionData.cause) {
-    return <CommonException cause={questions.questionData.cause} />;
-  } */
+  if (questions.cause) {
+    return <CommonException cause={questions.cause} />;
+  }
 
   const handlePageChange = (page: number) => {
     router.push(`/?page=${page}&size=10`);
@@ -60,9 +66,7 @@ export default function BoardList() {
         <h1 className='flex items-center text-2xl font-bold px-3'>
           🙋‍♀️ 질문있어요!
         </h1>
-        <button className='btn' onClick={() => router.push('/question/write')}>
-          질문하기
-        </button>
+        <WriteButton />
       </div>
       <div className='flex flex-col items-center gap-14 mb-16'>
         <div className='overflow-x-auto w-full'>

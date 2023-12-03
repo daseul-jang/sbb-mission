@@ -1,6 +1,8 @@
 package com.techit.missionsbb.user.dto;
 
 import com.techit.missionsbb.user.domain.User;
+import com.techit.missionsbb.user.domain.UserRole;
+import com.techit.missionsbb.user.security.domain.RefreshToken;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,8 +17,15 @@ public class UserDto {
     private String password;
     private String email;
     private LocalDateTime createDate;
+    private String role;
+    private RefreshToken refreshToken;
 
-    public UserDto(final UserRequestDto dto) {
+    public UserDto(final UserLoginDto dto) {
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+    }
+
+    public UserDto(final UserSignupDto dto) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
@@ -28,6 +37,8 @@ public class UserDto {
         this.password = entity.getPassword();
         this.email = entity.getEmail();
         this.createDate = entity.getCreateDate();
+        this.role = entity.getRole();
+        this.refreshToken = entity.getRefreshToken();
     }
 
     public static User toEntity(final UserDto dto) {
@@ -35,6 +46,7 @@ public class UserDto {
                 .username(dto.getUsername())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
+                .role(UserRole.USER.getValue())
                 .build();
     }
 }

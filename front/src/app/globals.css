@@ -25,3 +25,17 @@
     )
     rgb(var(--background-start-rgb));
 } */
+
+.fade-out {
+  animation-name: fadeOut;
+  animation-duration: 0.5 s;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

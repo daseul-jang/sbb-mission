@@ -1,5 +1,6 @@
 package com.techit.missionsbb.question.controller;
 
+import com.techit.missionsbb.common.dto.ErrorResponseDto;
 import com.techit.missionsbb.common.dto.ResponseDto;
 import com.techit.missionsbb.question.domain.Question;
 import com.techit.missionsbb.question.dto.QuestionDto;
@@ -36,10 +37,10 @@ public class QuestionController {
         ResponseDto<QuestionDto> response;
         try {
             Question questionEntity = questionService.getQuestion(id);
-            response = ResponseDto.<QuestionDto>builder().objData(new QuestionDto(questionEntity)).build();
+            response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-222, e.getMessage())).build();
             return ResponseEntity.ok(response);
         }
     }
@@ -58,7 +59,7 @@ public class QuestionController {
             response = ResponseDto.<QuestionDto>builder().pageData(questionPageList).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-111, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -68,10 +69,10 @@ public class QuestionController {
         ResponseDto<QuestionDto> response;
         try {
             Question questionEntity = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto)));
-            response = ResponseDto.<QuestionDto>builder().objData(new QuestionDto(questionEntity)).build();
+            response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<QuestionDto>builder().error(e.getMessage()).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-333, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }

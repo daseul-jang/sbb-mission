@@ -1,6 +1,6 @@
 'use client';
 
-import useQuestion from '@/hooks/question';
+import { useQuestion } from '@/hooks/question';
 import AnswerForm from './AnswerForm';
 import { Answer } from '@/model/answer';
 import AnswerItem from './AnswerItem';

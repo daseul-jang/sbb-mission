@@ -1,15 +1,15 @@
 import { Answer } from './answer';
 
-export type Question = {
+export interface Question {
   id?: number;
   subject: string;
   content: string;
   createDate?: string;
-  answerList?: Answer[];
-};
+  answerList?: Answer[] | null;
+}
 
-export type PageData = {
-  content: Question[];
+export interface PageData {
+  content: Question[] | null;
   empty: boolean;
   first: boolean;
   last: boolean;
@@ -20,25 +20,25 @@ export type PageData = {
   sort: Sort;
   totalElements: number;
   totalPages: number;
-};
+}
 
-export type Pageable = {
+export interface Pageable {
   offset: number;
   pageNumber: number;
   pageSize: number;
   paged: boolean;
   sort: Sort;
-};
+}
 
-export type Sort = {
+export interface Sort {
   empty: boolean;
   sorted: boolean;
   unsorted: boolean;
-};
+}
 
-export type ResQuestionData = {
-  error?: string | undefined;
-  listData?: Question[] | undefined;
-  pageData?: PageData | undefined;
-  objData?: Question | undefined;
-};
+export interface ResQuestionData {
+  error?: string | null;
+  listData?: Question[] | null;
+  pageData?: PageData | null;
+  objData?: Question | null;
+}

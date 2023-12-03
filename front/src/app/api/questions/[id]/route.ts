@@ -6,9 +6,6 @@ type Context = {
 };
 
 export async function GET(_: NextRequest, context: Context) {
-  //console.log(context);
-
   const objData = await getQuestionDetail(Number(context.params.id));
-
   return NextResponse.json({ objData }, { status: 200 });
 }

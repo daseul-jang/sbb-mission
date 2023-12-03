@@ -1,12 +1,17 @@
 package com.techit.missionsbb.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.techit.missionsbb.common.domain.DateEntity;
+import com.techit.missionsbb.user.security.domain.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_tb")
@@ -22,4 +27,13 @@ public class User extends DateEntity {
 
     @Column(unique = true)
     private String email;
+
+    private String role;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
+
+    @CreatedDate
+    private LocalDateTime createDate;
 }

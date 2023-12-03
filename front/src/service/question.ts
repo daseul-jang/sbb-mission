@@ -1,3 +1,5 @@
+import { postFetch } from '@/config/fetch-config';
+
 const QUESTION_URL = 'http://localhost:8080/question';
 const FETCH_OPTION: RequestInit = {
   headers: {
@@ -6,14 +8,26 @@ const FETCH_OPTION: RequestInit = {
   cache: 'no-store',
 };
 
-export const addQuestion = async (subject: string, content: string) => {
+export const addQuestion = async (
+  subject: string,
+  content: string,
+  accessToken?: string
+) => {
   try {
+    /* const data = await postFetch(`${QUESTION_URL}/register`, accessToken, {
+      cache: 'force-cache',
+      body: JSON.stringify({ subject, content }),
+    }).then((res) => res.json()); */
+
     const data = await fetch(`${QUESTION_URL}/register`, {
-      ...FETCH_OPTION,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       cache: 'force-cache',
       method: 'POST',
       body: JSON.stringify({ subject, content }),
     }).then((res) => res.json());
+
     return data;
   } catch (err) {
     console.log(err);
@@ -36,10 +50,10 @@ export const getQuestionList = async (page: number, size: number) => {
 };
 
 export const getQuestionDetail = async (id: number) => {
-  const { objData } = await fetch(
+  const { objectData } = await fetch(
     `${QUESTION_URL}/detail/${id}`,
     FETCH_OPTION
   ).then((res) => res.json());
 
-  return objData;
+  return objectData;
 };

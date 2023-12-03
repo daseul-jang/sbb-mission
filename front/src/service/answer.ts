@@ -7,10 +7,6 @@ const FETCH_OPTION: RequestInit = {
 };
 
 export const addAnswer = async (id: number, content: string) => {
-  console.log('addAnswer');
-  console.log(id);
-  console.log(content);
-
   try {
     const data = await fetch(`${ANSWER_URL}/register/${id}`, {
       ...FETCH_OPTION,

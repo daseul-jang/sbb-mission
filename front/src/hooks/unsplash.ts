@@ -1,25 +1,29 @@
 import { unsplashAxios } from '@/config/axios-config';
 import { useQuery } from '@tanstack/react-query';
 
-const fetchUnsplash = async () => {
-  const res = await unsplashAxios.get('/random');
+const fetchUnsplash = async (count: number) => {
+  // 랜덤 이미지 api
+  /* const {
+    data: { urls: raw },
+  } = await unsplashAxios.get('/random'); */
 
-  console.log(res);
+  // 랜덤 이미지 10개 가져오기
+  const { data } = await unsplashAxios.get(`/random?count=${count}`);
 
-  return res;
+  return data;
 };
 
-export default function useRandomImage() {
+export default function useRandomImage(count: number) {
   const {
-    data: randomImage,
+    data: randomImages,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ['randomImage'],
-    queryFn: fetchUnsplash,
-    refetchInterval: 30000,
+    queryKey: ['randomImage', count],
+    queryFn: () => fetchUnsplash(count),
+    refetchInterval: 6000000,
   });
 
-  return { randomImage, isLoading, isError, error };
+  return { randomImages, isLoading, isError, error };
 }
