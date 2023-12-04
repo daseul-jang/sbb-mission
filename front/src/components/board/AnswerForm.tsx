@@ -5,7 +5,7 @@ import Button from '../ui/button/Button';
 export default function AnswerForm({ id }: { id: string }) {
   const [content, setContent] = useState('');
   const { submitAnswer, isPending } = useAnswer({
-    id: Number(id),
+    id: id,
     content: content,
     setContent: setContent,
   });
