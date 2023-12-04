@@ -7,13 +7,15 @@ import Pagination from '../ui/Pagination';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CommonException from '../error/CommonException';
-import WriteButton from '../ui/button/WriteButton';
+import { useSession } from 'next-auth/react';
 
 export default function BoardList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 0;
   const { questions, isLoading, isError, queryError } = useQuestions(page, 10);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   useEffect(() => {
     if (localStorage.getItem('reload') === 'true') {
@@ -66,7 +68,14 @@ export default function BoardList() {
         <h1 className='flex items-center text-2xl font-bold px-3'>
           🙋‍♀️ 질문있어요!
         </h1>
-        <WriteButton />
+        {user && (
+          <button
+            className='btn'
+            onClick={() => router.push('/question/write')}
+          >
+            질문하기
+          </button>
+        )}
       </div>
       <div className='flex flex-col items-center gap-14 mb-16'>
         <div className='overflow-x-auto w-full'>

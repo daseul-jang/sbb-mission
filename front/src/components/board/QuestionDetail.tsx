@@ -28,6 +28,12 @@ export default function QuestionDetail({ id }: Props) {
   }
 
   const handleDeleteSubmit = () => {
+    if (user?.username !== question.author.username) {
+      alert('삭제 권한이 없습니다.');
+      router.replace(`/`);
+      return;
+    }
+
     if (confirm('삭제하시겠어요?')) {
       submitDeleteQuestion();
       router.replace(`/`);
