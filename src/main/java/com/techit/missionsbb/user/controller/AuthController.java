@@ -46,7 +46,7 @@ public class AuthController {
                 errorMsg = "알 수 없는 오류입니다.";
             }
             log.error(errorMsg);
-            response = ResponseDto.<JwtAuthResponseDto>builder().errorData(new ErrorResponseDto(-999, errorMsg)).build();
+            response = ResponseDto.<JwtAuthResponseDto>builder().errorData(new ErrorResponseDto(-150, errorMsg)).build();
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -60,7 +60,7 @@ public class AuthController {
             log.info("뉴액세스토큰: {}", response.getObjectData().getAccessToken());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<JwtAuthResponseDto>builder().errorData(new ErrorResponseDto(-900, e.getMessage())).build();
+            response = ResponseDto.<JwtAuthResponseDto>builder().errorData(new ErrorResponseDto(-160, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }

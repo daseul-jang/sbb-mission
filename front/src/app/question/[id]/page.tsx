@@ -4,11 +4,11 @@ import DetailSection from '@/components/ui/DetailSection';
 import { getQuestionDetail } from '@/service/question';
 import { Metadata } from 'next';
 
-type Props = {
+interface Props {
   params: {
     id: string;
   };
-};
+}
 
 export default async function QuestionDetailPage({ params: { id } }: Props) {
   return (

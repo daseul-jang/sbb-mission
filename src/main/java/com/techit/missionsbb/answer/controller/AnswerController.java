@@ -38,7 +38,7 @@ public class AnswerController {
             response = ResponseDto.<AnswerDto>builder().objectData(new AnswerDto(answerEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<AnswerDto>builder().errorData(new ErrorResponseDto(-444, e.getMessage())).build();
+            response = ResponseDto.<AnswerDto>builder().errorData(new ErrorResponseDto(-320, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }

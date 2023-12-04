@@ -1,5 +1,5 @@
-import { SignupInfo } from '@/model/user';
 import axios from '@/config/axios-config';
+import { SignupInfo } from '@/model/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const fetchSignup = async (user: SignupInfo) => {

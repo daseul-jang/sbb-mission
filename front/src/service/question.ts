@@ -19,10 +19,39 @@ const FETCH_OPTION: RequestInit = {
   cache: 'no-store',
 };
 
+export const modifyQuestion = async (
+  id: number,
+  subject: string,
+  content: string,
+  accessToken: string
+) => {
+  try {
+    const res = await fetch(`${QUESTION_URL}/modify/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: 'force-cache',
+      method: 'PUT',
+      body: JSON.stringify({ subject, content }),
+    });
+
+    if (!res.ok) {
+      throw new Error('수정 실패');
+    }
+
+    const { objectDate } = await res.json();
+
+    return objectDate;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const addQuestion = async (
   subject: string,
   content: string,
-  accessToken?: string
+  accessToken: string
 ): Promise<QuestionResponse | Error | unknown> => {
   try {
     const res = await fetch(`${QUESTION_URL}/register`, {

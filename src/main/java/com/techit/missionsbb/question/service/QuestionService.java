@@ -7,8 +7,10 @@ import com.techit.missionsbb.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +67,15 @@ public class QuestionService {
         return Optional.of(page)
                 .filter(Slice::hasContent)
                 .orElseThrow(() -> new DataNotFoundException("작성된 글이 없어요 🥲"));
+    }
+
+    @Transactional
+    public Question modify(final Question question, String authenticateUser) {
+        log.info("service modify createDate : {}", question.getCreateDate());
+        if (!question.getAuthor().getUsername().equals(authenticateUser)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+        return questionRepository.save(question);
     }
 
     @Transactional

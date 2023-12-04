@@ -38,10 +38,10 @@ public class UserController {
         } catch (DataIntegrityViolationException e) {
             bindingResult.reject("signup_failed", "이미 등록된 사용자입니다.");
 
-            response = ResponseDto.<UserDto>builder().errorData(new ErrorResponseDto(-888, e.getMessage())).build();
+            response = ResponseDto.<UserDto>builder().errorData(new ErrorResponseDto(-101, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
-            response = ResponseDto.<UserDto>builder().errorData(new ErrorResponseDto(-777, e.getMessage())).build();
+            response = ResponseDto.<UserDto>builder().errorData(new ErrorResponseDto(-100, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }

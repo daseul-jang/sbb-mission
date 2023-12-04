@@ -45,7 +45,7 @@ public class QuestionController {
             response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-222, e.getMessage())).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-240, e.getMessage())).build();
             return ResponseEntity.ok(response);
         }
     }
@@ -64,24 +64,43 @@ public class QuestionController {
             response = ResponseDto.<QuestionDto>builder().pageData(questionPageList).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-111, e.getMessage())).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-230, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<?> modify(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                    @PathVariable("id") int id,
+                                    @RequestBody QuestionRequestDto reqDto) {
+        ResponseDto<QuestionDto> response;
+        try {
+            Question questionEntity = questionService.getQuestion(id);
+            log.info(questionEntity.getCreateDate());
+            questionEntity = questionEntity.toBuilder()
+                    .subject(reqDto.getSubject())
+                    .content(reqDto.getContent())
+                    .build();
+            questionEntity = questionService.modify(questionEntity, userPrincipal.getUsername());
+            response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-210, "수정 실패")).build();
+            return ResponseEntity.ok(response);
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@AuthenticationPrincipal UserPrincipal userPrincipal, @Valid @RequestBody QuestionRequestDto reqDto) {
-        log.info("question register username: {}", userPrincipal.getUsername());
         ResponseDto<QuestionDto> response;
         try {
             User userEntity = userService.getUser(userPrincipal.getUsername());
             Question questionEntity = questionService.create(QuestionDto.toEntity(new QuestionDto(reqDto, userEntity)));
-            log.info("question register questionEntity username: {}", questionEntity.getAuthor().getUsername());
             response = ResponseDto.<QuestionDto>builder().objectData(new QuestionDto(questionEntity)).build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.info(e.getMessage());
-            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-333, e.getMessage())).build();
+            response = ResponseDto.<QuestionDto>builder().errorData(new ErrorResponseDto(-200, e.getMessage())).build();
             return ResponseEntity.badRequest().body(response);
         }
     }

@@ -1,11 +1,11 @@
 import { getQuestionDetail } from '@/service/question';
 import { NextRequest, NextResponse } from 'next/server';
 
-type Context = {
+interface Context {
   params: { id: string };
-};
+}
 
 export async function GET(_: NextRequest, context: Context) {
-  const objData = await getQuestionDetail(Number(context.params.id));
-  return NextResponse.json({ objData }, { status: 200 });
+  const objectData = await getQuestionDetail(Number(context.params.id));
+  return NextResponse.json({ objectData }, { status: 200 });
 }

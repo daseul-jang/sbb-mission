@@ -23,7 +23,7 @@ export default function CommonException({ code, msg, cause }: Props) {
     <TextCenterArea>
       <div className='flex flex-col gap-5'>
         <span className='text-2xl font-bold'>{msg}</span>
-        {code === -111 && (
+        {code === -230 && (
           <>
             {session ? (
               <WriteButton />

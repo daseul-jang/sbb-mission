@@ -18,6 +18,7 @@ public class QuestionDto {
     private User author;
     private String content;
     private LocalDateTime createDate;
+    private LocalDateTime updateDate;
     private List<Answer> answerList;
 
     public QuestionDto(final QuestionRequestDto dto, User user) {
@@ -32,6 +33,7 @@ public class QuestionDto {
         this.author = entity.getAuthor();
         this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
+        this.updateDate = entity.getUpdateDate();
         this.answerList = entity.getAnswerList();
     }
 
@@ -40,6 +42,8 @@ public class QuestionDto {
                 .subject(dto.getSubject())
                 .author(dto.getAuthor())
                 .content(dto.getContent())
+                .createDate(dto.getCreateDate())
+                .updateDate(dto.getUpdateDate())
                 .answerList(dto.getAnswerList())
                 .build();
     }

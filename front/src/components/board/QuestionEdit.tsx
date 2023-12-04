@@ -1,15 +1,23 @@
 'use client';
 
-import { useQuestionWrite } from '@/hooks/question';
+import { useQuestion, useQuestionModify } from '@/hooks/question';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
-import { useRouter } from 'next/navigation';
 
-export default function QuestionWrite() {
+export default function QuestionEdit() {
   const router = useRouter();
+  const { id } = useParams();
+  const { question } = useQuestion(id as string);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [post, setPost] = useState({ subject: '', content: '' });
-  const { submitQuestion, isPending, isError } = useQuestionWrite(post);
+  const [post, setPost] = useState({
+    subject: question.subject,
+    content: question.content,
+  });
+  const { submitQuestionModify, isPending, isError } = useQuestionModify(
+    Number(id),
+    post
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -32,20 +40,20 @@ export default function QuestionWrite() {
     });
   };
 
-  const handleSubmitWrite = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitModify = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    submitQuestion();
+    submitQuestionModify();
 
     if (isError) return;
 
-    router.replace('/');
+    router.replace(`/question/${id}`);
   };
 
   return (
     <form
       className='p-5 flex flex-col justify-between gap-5 h-screen'
-      onSubmit={handleSubmitWrite}
+      onSubmit={handleSubmitModify}
     >
       <div className='flex flex-col basis-1/12 bg-white justify-center h-full rounded-md mt-3'>
         <textarea
@@ -68,7 +76,7 @@ export default function QuestionWrite() {
         />
       </div>
       <div className='flex flex-col basis-2/12'>
-        <button className='btn'>등록하기</button>
+        <button className='btn'>수정하기</button>
       </div>
     </form>
   );

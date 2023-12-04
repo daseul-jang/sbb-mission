@@ -1,22 +1,50 @@
 import axios from '@/config/axios-config';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-/** 게시글 등록 */
 type ReqQuestion = {
   subject: string;
   content: string;
 };
 
+const fetchModify = async (id: number, { subject, content }: ReqQuestion) => {
+  return await axios.put(`/questions/${id}/modify`, { subject, content });
+};
+
+export const useQuestionModify = (
+  id: number,
+  { subject, content }: ReqQuestion
+) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: submitQuestionModify,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: () => fetchModify(id, { subject, content }),
+    onSuccess: () => {
+      console.log('수정 성공');
+      queryClient.invalidateQueries({ queryKey: ['question'] });
+    },
+  });
+
+  return { submitQuestionModify, isPending, isError };
+};
+
+/** 게시글 등록 */
 const fetchWrite = async ({ subject, content }: ReqQuestion) => {
   return await axios.post('/questions/write', { subject, content });
 };
 
 export const useQuestionWrite = ({ subject, content }: ReqQuestion) => {
   const queryClient = useQueryClient();
-  const { mutate: submitQuestion, isPending } = useMutation({
+  const {
+    mutate: submitQuestion,
+    isPending,
+    isError,
+  } = useMutation({
     mutationFn: () => fetchWrite({ subject, content }),
     onSuccess: () => {
-      console.log('성공');
+      console.log('작성 성공');
       queryClient.invalidateQueries({ queryKey: ['questions'] });
     },
     onError: () => {
@@ -24,16 +52,16 @@ export const useQuestionWrite = ({ subject, content }: ReqQuestion) => {
     },
   });
 
-  return { submitQuestion, isPending };
+  return { submitQuestion, isPending, isError };
 };
 
 /** 게시글 단건 조회 */
 const fetchQuestion = async (id: string) => {
   const {
-    data: { objData },
+    data: { objectData },
   } = await axios.get(`/questions/${id}`);
 
-  return objData;
+  return objectData;
 };
 
 export const useQuestion = (id: string) => {
