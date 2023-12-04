@@ -69,6 +69,18 @@ public class QuestionController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                    @PathVariable("id") int id) {
+        try {
+            Question questionEntity = questionService.getQuestion(id);
+            questionService.delete(questionEntity, userPrincipal.getUsername());
+            return ResponseEntity.ok(new ResponseDto<>("삭제 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ResponseDto<>(new ErrorResponseDto(-220, "삭제 실패")));
+        }
+    }
+
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> modify(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                     @PathVariable("id") int id,

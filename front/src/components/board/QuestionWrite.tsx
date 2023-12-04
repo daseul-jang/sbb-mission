@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuestionWrite } from '@/hooks/question';
+import { useWriteQuestion } from '@/hooks/question';
 import { useEffect, useRef, useState } from 'react';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ export default function QuestionWrite() {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [post, setPost] = useState({ subject: '', content: '' });
-  const { submitQuestion, isPending, isError } = useQuestionWrite(post);
+  const { submitQuestion, isPending, isError } = useWriteQuestion(post);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -32,7 +32,7 @@ export default function QuestionWrite() {
     });
   };
 
-  const handleSubmitWrite = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleWriteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     submitQuestion();
@@ -45,7 +45,7 @@ export default function QuestionWrite() {
   return (
     <form
       className='p-5 flex flex-col justify-between gap-5 h-screen'
-      onSubmit={handleSubmitWrite}
+      onSubmit={handleWriteSubmit}
     >
       <div className='flex flex-col basis-1/12 bg-white justify-center h-full rounded-md mt-3'>
         <textarea

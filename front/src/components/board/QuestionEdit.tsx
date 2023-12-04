@@ -1,23 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useQuestion, useQuestionModify } from '@/hooks/question';
+import { useQuestion, useModifyQuestion } from '@/hooks/question';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
+import { useSession } from 'next-auth/react';
 
 export default function QuestionEdit() {
   const router = useRouter();
   const { id } = useParams();
-  const { question } = useQuestion(id as string);
+  const { question, isError } = useQuestion(id as string);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [post, setPost] = useState({
-    subject: question.subject,
-    content: question.content,
+    subject: question?.subject,
+    content: question?.content,
   });
-  const { submitQuestionModify, isPending, isError } = useQuestionModify(
-    Number(id),
-    post
-  );
+  const {
+    submitModifyQuestion,
+    isPending,
+    isError: isEditError,
+  } = useModifyQuestion(id as string, post);
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  useEffect(() => {
+    if (!question || user?.username !== question.author.username) {
+      alert('권한이 없습니다.');
+      //router.replace(`/question/${id}`);
+      router.back();
+    }
+  }, []);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -27,7 +40,7 @@ export default function QuestionEdit() {
     }
   }, [post.subject]);
 
-  if (isPending) {
+  if (!question || user?.username !== question.author.username || isPending) {
     return <LoadingSpinnerCircle />;
   }
 
@@ -40,12 +53,12 @@ export default function QuestionEdit() {
     });
   };
 
-  const handleSubmitModify = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleModifySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    submitQuestionModify();
+    submitModifyQuestion();
 
-    if (isError) return;
+    if (isEditError) return;
 
     router.replace(`/question/${id}`);
   };
@@ -53,7 +66,7 @@ export default function QuestionEdit() {
   return (
     <form
       className='p-5 flex flex-col justify-between gap-5 h-screen'
-      onSubmit={handleSubmitModify}
+      onSubmit={handleModifySubmit}
     >
       <div className='flex flex-col basis-1/12 bg-white justify-center h-full rounded-md mt-3'>
         <textarea

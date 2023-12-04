@@ -19,6 +19,31 @@ const FETCH_OPTION: RequestInit = {
   cache: 'no-store',
 };
 
+export const deleteQuestion = async (id: number, accessToken: string) => {
+  try {
+    const res = await fetch(`${QUESTION_URL}/delete/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: 'no-store',
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      throw new Error('삭제 실패');
+    }
+
+    const data = await res.json();
+
+    // successMessage 반환
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
 export const modifyQuestion = async (
   id: number,
   subject: string,
@@ -44,6 +69,7 @@ export const modifyQuestion = async (
 
     return objectDate;
   } catch (err) {
+    console.log(err);
     return err;
   }
 };

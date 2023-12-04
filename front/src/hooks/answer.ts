@@ -3,12 +3,12 @@ import { SetStateAction } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type ReqAnswer = {
-  id: number;
+  id: string;
   content: string;
   setContent: (str: SetStateAction<string>) => void;
 };
 
-const fetchAddAnswer = async (id: number, content: string) => {
+const fetchAddAnswer = async (id: string, content: string) => {
   return await axios.post('/answer', { id: id, content: content });
 };
 

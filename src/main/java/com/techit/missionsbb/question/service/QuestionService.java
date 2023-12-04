@@ -44,7 +44,7 @@ public class QuestionService {
     /**
      * 게시글 단건 조회
      */
-    public Question getQuestion(Integer id) {
+    public Question getQuestion(int id) {
         return questionRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("앗! 해당 글이 없어요 😅"));
     }
@@ -70,7 +70,15 @@ public class QuestionService {
     }
 
     @Transactional
-    public Question modify(final Question question, String authenticateUser) {
+    public void delete(final Question question, final String username) {
+        if (!question.getAuthor().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
+        }
+        questionRepository.delete(question);
+    }
+
+    @Transactional
+    public Question modify(final Question question, final String authenticateUser) {
         log.info("service modify createDate : {}", question.getCreateDate());
         if (!question.getAuthor().getUsername().equals(authenticateUser)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");

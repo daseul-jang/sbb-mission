@@ -6,17 +6,40 @@ type ReqQuestion = {
   content: string;
 };
 
-const fetchModify = async (id: number, { subject, content }: ReqQuestion) => {
+/** 게시글 삭제 */
+const fetchDelete = async (id: string) => {
+  return await axios.delete(`/questions/${id}/delete`);
+};
+
+export const useDeleteQuestion = (id: string) => {
+  const queryClient = useQueryClient();
+  const { mutate: submitDeleteQuestion, isPending } = useMutation({
+    mutationFn: () => fetchDelete(id),
+    onSuccess: () => {
+      console.log('삭제 성공');
+      queryClient.invalidateQueries({ queryKey: ['questions'] });
+    },
+    onError: () => {
+      console.log('삭제 실패');
+      throw new Error('삭제 실패');
+    },
+  });
+
+  return { submitDeleteQuestion, isPending };
+};
+
+/** 게시글 수정 */
+const fetchModify = async (id: string, { subject, content }: ReqQuestion) => {
   return await axios.put(`/questions/${id}/modify`, { subject, content });
 };
 
-export const useQuestionModify = (
-  id: number,
+export const useModifyQuestion = (
+  id: string,
   { subject, content }: ReqQuestion
 ) => {
   const queryClient = useQueryClient();
   const {
-    mutate: submitQuestionModify,
+    mutate: submitModifyQuestion,
     isPending,
     isError,
   } = useMutation({
@@ -27,7 +50,7 @@ export const useQuestionModify = (
     },
   });
 
-  return { submitQuestionModify, isPending, isError };
+  return { submitModifyQuestion, isPending, isError };
 };
 
 /** 게시글 등록 */
@@ -35,7 +58,7 @@ const fetchWrite = async ({ subject, content }: ReqQuestion) => {
   return await axios.post('/questions/write', { subject, content });
 };
 
-export const useQuestionWrite = ({ subject, content }: ReqQuestion) => {
+export const useWriteQuestion = ({ subject, content }: ReqQuestion) => {
   const queryClient = useQueryClient();
   const {
     mutate: submitQuestion,

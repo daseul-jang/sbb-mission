@@ -14,10 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 public class ResponseDto<T> {
     //private String error;
+    private String successMessage;
     private ErrorResponseDto errorData;
     private List<T> listData;
     private Page<T> pageData;
     private T objectData;
+
+    public ResponseDto(String successMessage) {
+        this.successMessage = successMessage;
+    }
 
     public ResponseDto(List<T> list) {
         this.listData = list;
