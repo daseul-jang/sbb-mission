@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-@ToString
 @Log4j2
 @Getter
 @Setter
@@ -23,7 +22,6 @@ public class UserPrincipal implements UserDetails {
     private Map<String, Object> attributes;
 
     public static UserPrincipal create(User user) {
-        log.info("create user.getName : {}", user.getUsername());
         List<GrantedAuthority> authorities = Collections.
                 singletonList(
                         new SimpleGrantedAuthority(
@@ -32,8 +30,6 @@ public class UserPrincipal implements UserDetails {
                         )
                 );
 
-        log.info("create authorities: {}", authorities.toString());
-
         return UserPrincipal.builder()
                 .user(user)
                 .authorities(authorities)
@@ -41,7 +37,6 @@ public class UserPrincipal implements UserDetails {
     }
 
     public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        log.info("UserPrincipal create attributes: {}", attributes);
         UserPrincipal userPrincipal = UserPrincipal.create(user);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;

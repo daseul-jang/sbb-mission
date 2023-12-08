@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AnswerService {
     private final AnswerRepository answerRepository;
@@ -23,6 +24,7 @@ public class AnswerService {
         answerRepository.delete(answer);
     }
 
+    @Transactional
     public Answer modify(Answer answer, String username) {
         if (!answer.getAuthor().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
@@ -35,6 +37,7 @@ public class AnswerService {
         return answerRepository.findById(id).orElseThrow(() -> new DataNotFoundException("답변을 찾을 수 없어요 😅"));
     }
 
+    @Transactional
     public Answer create(final Answer answer) {
         return answerRepository.save(answer);
     }

@@ -16,8 +16,8 @@ import java.util.Optional;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
 

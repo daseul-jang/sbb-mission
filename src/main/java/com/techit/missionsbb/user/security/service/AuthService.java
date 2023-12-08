@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Log4j2
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
@@ -47,7 +48,8 @@ public class AuthService {
         );
     }
 
-    private RefreshToken checkAndCreateRefreshToken(Authentication authentication) {
+    @Transactional
+    protected RefreshToken checkAndCreateRefreshToken(Authentication authentication) {
         User authenticateUser = userService.getUser(authentication.getName());
         RefreshToken refreshToken = refreshTokenRepository.findByUser(authenticateUser).orElse(null);
 
