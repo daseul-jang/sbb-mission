@@ -25,7 +25,6 @@ public class QuestionService {
      * 게시글 단건 조회
      */
     public Question getQuestion(int id) {
-
         return questionRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("앗! 해당 글이 없어요 😅"));
     }
