@@ -2,72 +2,46 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { LoginInfo } from '@/model/user';
 import { userLogin } from '@/service/user';
-import { cookies } from 'next/headers';
-import { stringify } from 'querystring';
+import { ErrorResponseDto, ValidError } from '@/model/common';
+
+const handleErrorData = (errorData: ErrorResponseDto) => {
+  const { validError, errorMessage } = errorData;
+
+  if (validError) throw new Error(getValidErrorMessage(validError));
+  if (errorMessage) throw new Error(`${errorMessage} 😅`);
+};
+
+const getValidErrorMessage = (validError: ValidError) => {
+  return validError.username && validError.password
+    ? '아이디와 비밀번호는 필수 항목입니다.'
+    : validError.username || validError.password;
+};
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  /* cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24, // 24 hours
-      },
-    },
-  }, */
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {},
       async authorize(credentials, req) {
         const { username, password } = credentials as LoginInfo;
-        /* const csrfToken = cookies()
-          .get('next-auth.csrf-token')
-          ?.value.split('|')[0]; */
+        const res = await userLogin({ username, password });
 
-        try {
-          const res = await userLogin(
-            {
-              username,
-              password,
-            }
-            //csrfToken
-          );
+        if (res?.errorData) handleErrorData(res.errorData);
 
-          return res;
-        } catch (err) {
-          console.log(err);
-
-          return err;
-        }
+        if (res?.objectData) return res.objectData;
       },
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      //const { id, username, email, createDate } = user?.user;
-
-      if (!user || user?.cause || user?.errorData) {
-        console.log('콜백오류');
-
-        return false;
-      }
-
-      return true;
-    },
     async jwt({ token, user }) {
-      if (user?.objectData) {
-        const resUser = user?.objectData;
-
+      if (user) {
         token.user = {
-          ...resUser.user,
-          accessToken: resUser.accessToken,
-          refreshToken: resUser.refreshToken,
+          ...user.user,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
         };
       }
 
@@ -83,6 +57,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/user/signin',
+    //error: '/user/error',
   },
 };
 

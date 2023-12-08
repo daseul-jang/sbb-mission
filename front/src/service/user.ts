@@ -38,14 +38,16 @@ export const getNewAccessToken = async () => {
 
 export const userLogin = async (user: LoginInfo) => {
   try {
-    const data = await fetch(`${AUTH_URL}/login`, {
+    const res = await fetch(`${AUTH_URL}/login`, {
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
       method: 'POST',
       body: JSON.stringify(user),
-    }).then((res) => res.json());
+    });
+
+    const data = await res.json();
 
     return data;
   } catch (err) {
@@ -64,13 +66,7 @@ export const addUser = async (user: SignupInfo) => {
       body: JSON.stringify(user),
     });
 
-    /* if (!res.ok) {
-      console.log(res);
-      throw new Error('회원가입 오류');
-    } */
-
     const data = await res.json();
-    console.log(data);
 
     return data;
   } catch (err) {

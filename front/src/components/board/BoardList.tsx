@@ -8,12 +8,14 @@ import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CommonException from '../exception/CommonException';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 export default function BoardList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 0;
-  const [selectedSize, setSelectedSize] = useState(10);
+  const size = Number(searchParams.get('size'));
+  const [selectedSize, setSelectedSize] = useState(size || 10);
   const { questions, isLoading, isError, queryError } = useQuestions(
     page,
     selectedSize
@@ -21,9 +23,11 @@ export default function BoardList() {
   const { data: session } = useSession();
   const user = session?.user;
 
+  // 새로고침 시 url에 담긴 페이지네이션 정보 초기화
   useEffect(() => {
     if (localStorage.getItem('reload') === 'true') {
       router.replace('/');
+      setSelectedSize(10);
       localStorage.removeItem('reload');
     }
   }, [router]);
@@ -109,7 +113,7 @@ export default function BoardList() {
                     {question.id}
                   </td>
                   <td className='px-5 flex items-center gap-4 text-neutral-600 hover:text-neutral-800'>
-                    <button
+                    {/* <button
                       onClick={() =>
                         router.push(
                           `/question/${question.id}?page=${page}&size=${selectedSize}`
@@ -117,7 +121,12 @@ export default function BoardList() {
                       }
                     >
                       {question.subject}
-                    </button>
+                    </button> */}
+                    <Link
+                      href={`/question/${question.id}?page=${page}&size=${selectedSize}`}
+                    >
+                      {question.subject}
+                    </Link>
                     <span className='badge badge-sm badge-outline badge-warning text-xs'>
                       {question.answerList?.length}
                     </span>

@@ -1,16 +1,13 @@
 package com.techit.missionsbb.user.security.domain;
 
+import lombok.experimental.SuperBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.techit.missionsbb.common.domain.DateEntity;
 import com.techit.missionsbb.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

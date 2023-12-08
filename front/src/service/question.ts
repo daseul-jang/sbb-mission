@@ -133,7 +133,7 @@ export const getQuestionList = async (page: number, size: number) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-cache',
+      cache: 'no-store',
     });
 
     console.log(res.status);

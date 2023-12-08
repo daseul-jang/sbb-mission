@@ -24,11 +24,33 @@ export const useSignup = (user: SignupInfo) => {
   } = useMutation({
     mutationFn: () => fetchSignup(user),
     onSuccess: (res) => {
-      console.log('성공');
-      console.log(res);
+      if (res.errorData) {
+        console.log('회원가입 에러');
+
+        const validError = res.errorData?.validError;
+        const errorMessage = res.errorData?.errorMessage;
+
+        let message = errorMessage;
+
+        if (validError) {
+          ['username', 'password', 'passwordCheck', 'email'].forEach((key) => {
+            if (validError[key]) {
+              message = validError[key];
+            }
+          });
+        }
+
+        if (message) {
+          alert(message);
+        }
+
+        return;
+      }
 
       queryClient.invalidateQueries({ queryKey: ['questions'] });
-      toast.success('성공적으로 가입되었습니다.');
+
+      toast.success('회원가입 성공! 😘');
+
       setTimeout(() => {
         router.replace('/user/signin');
       }, 800);
@@ -36,8 +58,8 @@ export const useSignup = (user: SignupInfo) => {
     onError: (error) => {
       console.log('에러!!!!!!!!!!!!!!!');
       console.log(error);
-      //alert('회원가입을 다시 시도해 주세요.');
-      toast.error('회원가입을 다시 시도해 주세요.');
+
+      toast.error('알 수 없는 오류가 발생했어요 😵‍💫');
     },
   });
 

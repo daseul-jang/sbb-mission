@@ -11,8 +11,19 @@ export interface ResponseDto {
 
 export interface ErrorResponseDto {
   errorStatus: number;
-  errorMesage: string;
-  validError: [];
+  errorCode: string;
+  errorMessage: string;
+  errorType: string;
+  validError: ValidError;
+}
+
+export interface ValidError {
+  username?: string;
+  password?: string;
+  passwordCheck?: string;
+  email?: string;
+  subject?: string;
+  content?: string;
 }
 
 export interface PageData {

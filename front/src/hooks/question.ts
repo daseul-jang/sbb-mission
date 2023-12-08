@@ -74,16 +74,17 @@ export const useWriteQuestion = ({ subject, content }: ReqQuestion) => {
     onSuccess: (res) => {
       console.log('작성 성공');
 
-      if (res.data?.errorData) {
-        const { validError } = res.data?.errorData;
-        let message;
+      if (res.data?.errorData?.validError) {
+        const { subject, content } = res.data.errorData.validError;
+        const message =
+          subject && content
+            ? '제목과 내용은 비워둘 수 없어요!'
+            : subject || content;
 
-        if (validError?.subject) message = validError?.subject;
-        if (validError?.content) message = validError?.content;
-        if (validError?.subject && validError?.content)
-          message = '제목과 내용은 비워둘 수 없어요!';
+        if (message) {
+          alert(message);
+        }
 
-        alert(message);
         return;
       }
 

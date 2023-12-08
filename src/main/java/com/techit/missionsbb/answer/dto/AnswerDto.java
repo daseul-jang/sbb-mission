@@ -2,8 +2,6 @@ package com.techit.missionsbb.answer.dto;
 
 import com.techit.missionsbb.answer.domain.Answer;
 import com.techit.missionsbb.question.domain.Question;
-import com.techit.missionsbb.question.dto.QuestionDto;
-import com.techit.missionsbb.question.dto.QuestionRequestDto;
 import com.techit.missionsbb.user.domain.User;
 import lombok.*;
 

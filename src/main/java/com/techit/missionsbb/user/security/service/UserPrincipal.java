@@ -1,9 +1,9 @@
 package com.techit.missionsbb.user.security.service;
 
-import com.techit.missionsbb.user.domain.User;
-import com.techit.missionsbb.user.domain.UserRole;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import com.techit.missionsbb.user.domain.User;
+import com.techit.missionsbb.user.domain.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

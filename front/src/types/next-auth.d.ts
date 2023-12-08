@@ -1,14 +1,13 @@
+import { ErrorResponseDto } from '@/model/common';
 import { AuthUser } from '@/model/user';
-import { DefaultSession } from 'next-auth';
+import { DefaultSession, DefaultUser } from 'next-auth';
 import { SignInResponse } from 'next-auth/react';
 
 declare module 'next-auth' {
   interface User {
-    objectData: {
-      user: AuthUser;
-      accessToken: string;
-      refreshToken: string;
-    };
+    user: AuthUser;
+    accessToken: string;
+    refreshToken: string;
     cause?: {
       errno: number;
       code: string;
@@ -16,10 +15,7 @@ declare module 'next-auth' {
       address: string;
       port: number;
     };
-    errorData?: {
-      errorStatus: number;
-      errorMessage: string;
-    };
+    errorData?: ErrorResponseDto;
   }
 
   interface Session extends DefaultSession {
@@ -29,6 +25,10 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
+    user: AuthUser;
+  }
+
+  interface User {
     user: AuthUser;
   }
 }

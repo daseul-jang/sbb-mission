@@ -59,11 +59,15 @@ export default function AuthForm({ auth }: AuthProps) {
         });
 
         console.log(res);
-
-        if (!res?.ok || res?.errorData) {
-          toast.error('로그인을 다시 시도해주세요.');
+        if (!res?.ok) {
+          toast.error(res?.error);
           return;
         }
+
+        /* if (!res?.ok || res?.errorData) {
+          toast.error('로그인을 다시 시도해주세요.');
+          return;
+        } */
 
         toast.success(`${user.username}님 환영합니다! 🎉`);
 

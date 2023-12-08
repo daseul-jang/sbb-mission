@@ -1,5 +1,9 @@
 package com.techit.missionsbb.user.security.jwt;
 
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import com.techit.missionsbb.user.security.domain.RefreshToken;
 import com.techit.missionsbb.user.security.service.UserPrincipal;
 import com.techit.missionsbb.user.security.service.UserDetailsServiceImpl;
@@ -8,22 +12,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
-import java.time.Instant;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Component
@@ -73,13 +67,12 @@ public class TokenProvider {
                 .compact();
     }
 
-    /**
-     * 토큰에서 사용자 이름(username) 추출
-     */
+    // 토큰에서 사용자 이름(username) 추출
     public String getUsernameFromToken(String token) {
         return Jwts.parser().verifyWith(createKey(tokenSecret)).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
+    // 토큰에서 사용자 이름을 추출한 후 해당 사용자 조회
     public Authentication getAuthentication(String token) {
         UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserByUsername(getUsernameFromToken(token));
         return new UsernamePasswordAuthenticationToken(userPrincipal, "", userPrincipal.getAuthorities());

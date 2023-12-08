@@ -1,15 +1,14 @@
 package com.techit.missionsbb.question.service;
 
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import com.techit.missionsbb.common.exception.DataNotFoundException;
 import com.techit.missionsbb.question.domain.Question;
 import com.techit.missionsbb.question.repository.QuestionRepository;
-import com.techit.missionsbb.user.domain.User;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -26,6 +25,7 @@ public class QuestionService {
      * 게시글 단건 조회
      */
     public Question getQuestion(int id) {
+
         return questionRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("앗! 해당 글이 없어요 😅"));
     }
@@ -42,7 +42,9 @@ public class QuestionService {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by("id").descending());
+
         Page<Question> page = questionRepository.findAll(sortedPageable);
+
         return Optional.of(page)
                 .filter(Slice::hasContent)
                 .orElseThrow(() -> new DataNotFoundException("작성된 글이 없어요 🥲"));
@@ -53,6 +55,7 @@ public class QuestionService {
         if (!question.getAuthor().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
         }
+
         questionRepository.delete(question);
     }
 
@@ -61,6 +64,7 @@ public class QuestionService {
         if (!question.getAuthor().getUsername().equals(authenticateUser)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
+
         return questionRepository.save(question);
     }
 

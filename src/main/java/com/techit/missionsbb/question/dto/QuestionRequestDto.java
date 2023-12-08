@@ -1,11 +1,7 @@
 package com.techit.missionsbb.question.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.Optional;
 
 @Data
 @Builder

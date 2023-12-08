@@ -4,7 +4,6 @@ import com.techit.missionsbb.answer.domain.Answer;
 import com.techit.missionsbb.question.domain.Question;
 import com.techit.missionsbb.user.domain.User;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
