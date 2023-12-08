@@ -3,23 +3,11 @@
 import { useWriteQuestion } from '@/hooks/question';
 import { useEffect, useRef, useState } from 'react';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
-export default function QuestionWrite() {
-  const router = useRouter();
+function QuestionWrite() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [post, setPost] = useState({ subject: '', content: '' });
   const { submitQuestion, isPending, isError } = useWriteQuestion(post);
-  const { data: session } = useSession();
-  const user = session?.user;
-
-  useEffect(() => {
-    if (!user) {
-      alert('로그인이 필요한 서비스입니다.');
-      router.replace('/');
-    }
-  }, [user]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -29,7 +17,7 @@ export default function QuestionWrite() {
     }
   }, [post.subject]);
 
-  if (!user || isPending) {
+  if (isPending) {
     return <LoadingSpinnerCircle />;
   }
 
@@ -44,12 +32,7 @@ export default function QuestionWrite() {
 
   const handleWriteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     submitQuestion();
-
-    if (isError) return;
-
-    router.replace('/');
   };
 
   return (
@@ -83,3 +66,5 @@ export default function QuestionWrite() {
     </form>
   );
 }
+
+export default QuestionWrite;

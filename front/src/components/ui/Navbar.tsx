@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const user = session?.user;
   const router = useRouter();
 
   console.log(session);
@@ -27,7 +28,11 @@ export default function Navbar() {
           <SearchIcon />
         </NavbarButton>
         <Dropdown type='notification' />
-        {session ? (
+        {status === 'loading' ? (
+          <button className='btn' disabled>
+            <span className='loading loading-spinner'></span>
+          </button>
+        ) : status === 'authenticated' ? (
           <>
             <Dropdown type='avatar' />
             <button className='btn text-sm' onClick={() => signOut()}>

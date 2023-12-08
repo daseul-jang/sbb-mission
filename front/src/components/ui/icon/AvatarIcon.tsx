@@ -6,7 +6,8 @@ export default function AvatarIcon() {
       <Image
         alt='Tailwind CSS Navbar component'
         src='/img/default-profile-img.png'
-        fill
+        width={40}
+        height={40}
       />
     </div>
   );

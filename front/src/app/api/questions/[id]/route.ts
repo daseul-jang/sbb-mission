@@ -6,6 +6,10 @@ interface Context {
 }
 
 export async function GET(_: NextRequest, context: Context) {
-  const objectData = await getQuestionDetail(Number(context.params.id));
-  return NextResponse.json({ objectData }, { status: 200 });
+  /* const response = await getQuestionDetail(Number(context.params.id));
+  return NextResponse.json({ response }, { status: 200 }); */
+
+  return getQuestionDetail(Number(context.params.id))
+    .then((res) => NextResponse.json(res))
+    .catch((error) => new Response(JSON.stringify(error), { status: 500 }));
 }

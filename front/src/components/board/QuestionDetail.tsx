@@ -6,25 +6,28 @@ import { getDate } from './BoardList';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { AuthUser } from '@/model/user';
+import CommonException from '../exception/CommonException';
 
-interface Props {
+export interface DetailProps {
   id: string;
+  user: AuthUser | undefined;
 }
 
-export default function QuestionDetail({ id }: Props) {
+export default function QuestionDetail({ id, user }: DetailProps) {
   const router = useRouter();
   const { question, isLoading, isError, error } = useQuestion(id);
   const { submitDeleteQuestion, isPending } = useDeleteQuestion(id);
-  const { data: session } = useSession();
-  const user = session?.user;
-  console.log('퀘스쳔디테일');
-  console.log(session);
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
   if (isError) {
-    return <div>에러</div>;
+    return <CommonException />;
+  }
+
+  if (!question) {
+    return '데이터없음';
   }
 
   const handleDeleteSubmit = () => {
@@ -68,7 +71,10 @@ export default function QuestionDetail({ id }: Props) {
           )}
         </div>
       </div>
-      <div className='basis-3/4 flex flex-col p-5 h-full'>
+      <div
+        className='basis-3/4 flex flex-col p-5 h-full'
+        style={{ whiteSpace: 'pre-line' }}
+      >
         {question.content}
       </div>
     </div>

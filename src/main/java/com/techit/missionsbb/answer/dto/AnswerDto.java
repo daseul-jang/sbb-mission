@@ -19,6 +19,7 @@ public class AnswerDto {
     private String content;
     private Question question;
     private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
     public AnswerDto(final AnswerRequestDto dto, User user) {
         this.author = user;
@@ -32,12 +33,15 @@ public class AnswerDto {
         this.content = entity.getContent();
         this.question = entity.getQuestion();
         this.createDate = entity.getCreateDate();
+        this.updateDate = entity.getUpdateDate();
     }
 
     public static Answer toEntity(final AnswerDto dto) {
         return Answer.builder()
                 .author(dto.getAuthor())
                 .content(dto.getContent())
+                .createDate(dto.getCreateDate())
+                .updateDate(dto.getUpdateDate())
                 .question(dto.getQuestion())
                 .build();
     }

@@ -55,12 +55,7 @@ export default function QuestionEdit() {
 
   const handleModifySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     submitModifyQuestion();
-
-    if (isEditError) return;
-
-    router.replace(`/question/${id}`);
   };
 
   return (

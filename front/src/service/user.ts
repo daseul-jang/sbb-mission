@@ -1,5 +1,4 @@
 import { LoginInfo, SignupInfo } from '@/model/user';
-import { postFetch } from '@/config/fetch-config';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
@@ -37,23 +36,11 @@ export const getNewAccessToken = async () => {
   }
 };
 
-export const userLogin = async (
-  user: LoginInfo,
-  csrfToken?: string | undefined
-) => {
-  console.log('userLogin');
-  console.log(user);
-  console.log(csrfToken);
-
+export const userLogin = async (user: LoginInfo) => {
   try {
-    /* const data = await loginFetch(`${AUTH_URL}/login`, {
-      body: JSON.stringify(user),
-    }).then((res) => res.json()); */
-
     const data = await fetch(`${AUTH_URL}/login`, {
       headers: {
         'Content-Type': 'application/json',
-        //'X-XSRF-TOKEN': csrfToken || '',
       },
       credentials: 'include',
       method: 'POST',
@@ -62,19 +49,34 @@ export const userLogin = async (
 
     return data;
   } catch (err) {
-    console.log('로그인 실패');
+    console.log(err);
+    return err;
   }
 };
 
 export const addUser = async (user: SignupInfo) => {
   try {
-    const data = await fetch(`${USER_URL}/signup`, {
-      ...FETCH_OPTION,
+    const res = await fetch(`${USER_URL}/signup`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
       method: 'POST',
       body: JSON.stringify(user),
-    }).then((res) => res.json());
+    });
+
+    /* if (!res.ok) {
+      console.log(res);
+      throw new Error('회원가입 오류');
+    } */
+
+    const data = await res.json();
     console.log(data);
 
     return data;
-  } catch (err) {}
+  } catch (err) {
+    console.log('회원가입 실패');
+    console.log(err);
+
+    return err;
+  }
 };

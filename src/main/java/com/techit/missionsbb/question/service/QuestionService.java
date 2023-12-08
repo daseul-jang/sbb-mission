@@ -22,25 +22,6 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    @Transactional
-    public void insertDummyData(Integer limit) {
-        //deleteDummyData();
-        for (int i = 1; i <= limit; i++) {
-            Question question = Question.builder()
-                    .subject("제목 테스트 " + i)
-                    .author(User.builder().username("tester" + i).build())
-                    .content("내용 테스트 " + i)
-                    .build();
-
-            questionRepository.save(question);
-        }
-    }
-
-    @Transactional
-    public void deleteDummyData() {
-        if (!getList().isEmpty()) questionRepository.deleteAll();
-    }
-
     /**
      * 게시글 단건 조회
      */
@@ -50,8 +31,6 @@ public class QuestionService {
     }
 
     public List<Question> getList() {
-        //return questionRepository.findAll();
-        //return questionRepository.findAllByOrderByCreateDateDesc();
         return questionRepository.findAllByOrderByIdDesc();
     }
 
@@ -79,7 +58,6 @@ public class QuestionService {
 
     @Transactional
     public Question modify(final Question question, final String authenticateUser) {
-        log.info("service modify createDate : {}", question.getCreateDate());
         if (!question.getAuthor().getUsername().equals(authenticateUser)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
@@ -88,7 +66,6 @@ public class QuestionService {
 
     @Transactional
     public Question create(final Question question) {
-        log.info("question create: {}", question.getAuthor().getUsername());
         return questionRepository.save(question);
     }
 }

@@ -1,25 +1,12 @@
-import { postFetch } from '@/config/fetch-config';
+import { ResponseDto } from '@/model/common';
 import { getNewAccessToken } from './user';
-import { Answer } from '@/model/answer';
-
-export interface QuestionResponse {
-  id: number;
-  subject: string;
-  author: string;
-  content: string;
-  createDate: string;
-  answerList: Answer[];
-}
 
 const QUESTION_URL = 'http://localhost:8080/question';
-const FETCH_OPTION: RequestInit = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  cache: 'no-store',
-};
 
-export const deleteQuestion = async (id: number, accessToken: string) => {
+export const deleteQuestion = async (
+  id: number,
+  accessToken: string
+): Promise<ResponseDto | Error | unknown> => {
   try {
     const res = await fetch(`${QUESTION_URL}/delete/${id}`, {
       headers: {
@@ -30,8 +17,15 @@ export const deleteQuestion = async (id: number, accessToken: string) => {
       method: 'DELETE',
     });
 
-    if (!res.ok) {
-      throw new Error('삭제 실패');
+    if (res.status === 401 || res.status === 403) {
+      const newUser = await getNewAccessToken();
+      if (newUser) {
+        return await deleteQuestion(id, newUser.accessToken);
+      } else {
+        throw new Error('토큰 재발급 실패');
+      }
+    } else if (!res.ok) {
+      throw new Error('게시글 삭제 오류');
     }
 
     const data = await res.json();
@@ -49,28 +43,35 @@ export const modifyQuestion = async (
   subject: string,
   content: string,
   accessToken: string
-) => {
+): Promise<ResponseDto | Error | unknown> => {
   try {
     const res = await fetch(`${QUESTION_URL}/modify/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-      cache: 'force-cache',
+      cache: 'no-store',
       method: 'PUT',
       body: JSON.stringify({ subject, content }),
     });
 
-    if (!res.ok) {
-      throw new Error('수정 실패');
+    if (res.status === 401 || res.status === 403) {
+      const newUser = await getNewAccessToken();
+      if (newUser) {
+        return await modifyQuestion(id, subject, content, newUser.accessToken);
+      } else {
+        throw new Error('토큰 재발급 실패');
+      }
+    } else if (!res.ok) {
+      throw new Error('게시글 수정 오류');
     }
 
-    const { objectDate } = await res.json();
+    const { objectData } = await res.json();
 
-    return objectDate;
+    return objectData;
   } catch (err) {
     console.log(err);
-    return err;
+    return;
   }
 };
 
@@ -78,7 +79,7 @@ export const addQuestion = async (
   subject: string,
   content: string,
   accessToken: string
-): Promise<QuestionResponse | Error | unknown> => {
+): Promise<ResponseDto | Error | unknown> => {
   try {
     const res = await fetch(`${QUESTION_URL}/register`, {
       headers: {
@@ -97,25 +98,9 @@ export const addQuestion = async (
       } else {
         throw new Error('토큰 재발급 실패');
       }
-    } else if (!res.ok) {
-      throw new Error('네트워크 응답 없음');
     }
 
-    const { objectData } = await res.json();
-
-    return objectData;
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-};
-
-export const getQuestionList = async (page: number, size: number) => {
-  try {
-    const data = await fetch(
-      `${QUESTION_URL}/list?page=${page}&size=${size}`,
-      FETCH_OPTION
-    ).then((res) => res.json());
+    const data = await res.json();
 
     return data;
   } catch (err) {
@@ -125,10 +110,41 @@ export const getQuestionList = async (page: number, size: number) => {
 };
 
 export const getQuestionDetail = async (id: number) => {
-  const { objectData } = await fetch(
-    `${QUESTION_URL}/detail/${id}`,
-    FETCH_OPTION
-  ).then((res) => res.json());
+  try {
+    const res = await fetch(`${QUESTION_URL}/detail/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-cache',
+    });
 
-  return objectData;
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+export const getQuestionList = async (page: number, size: number) => {
+  try {
+    const res = await fetch(`${QUESTION_URL}/list?page=${page}&size=${size}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-cache',
+    });
+
+    console.log(res.status);
+
+    const data = await res.json();
+
+    //console.log(data);
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };

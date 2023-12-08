@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDto<T> {
-    //private String error;
     private String successMessage;
     private ErrorResponseDto errorData;
     private List<T> listData;
@@ -22,10 +21,6 @@ public class ResponseDto<T> {
 
     public ResponseDto(String successMessage) {
         this.successMessage = successMessage;
-    }
-
-    public ResponseDto(List<T> list) {
-        this.listData = list;
     }
 
     public ResponseDto(T obj) {

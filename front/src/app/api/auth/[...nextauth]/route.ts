@@ -3,11 +3,23 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { LoginInfo } from '@/model/user';
 import { userLogin } from '@/service/user';
 import { cookies } from 'next/headers';
+import { stringify } from 'querystring';
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  /* cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24, // 24 hours
+      },
+    },
+  }, */
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -17,41 +29,55 @@ export const authOptions: NextAuthOptions = {
         /* const csrfToken = cookies()
           .get('next-auth.csrf-token')
           ?.value.split('|')[0]; */
-        const res = await userLogin(
-          {
-            username,
-            password,
-          }
-          //csrfToken
-        );
 
-        return res?.objectData;
+        try {
+          const res = await userLogin(
+            {
+              username,
+              password,
+            }
+            //csrfToken
+          );
+
+          return res;
+        } catch (err) {
+          console.log(err);
+
+          return err;
+        }
       },
     }),
   ],
   callbacks: {
     async signIn({ user }) {
-      const { id, username, email, createDate } = user?.user;
+      //const { id, username, email, createDate } = user?.user;
 
-      if (!username) {
+      if (!user || user?.cause || user?.errorData) {
+        console.log('콜백오류');
+
         return false;
       }
 
       return true;
     },
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.objectData) {
+        const resUser = user?.objectData;
+
         token.user = {
-          ...user.user,
-          accessToken: user.accessToken,
-          refreshToken: user.refreshToken,
+          ...resUser.user,
+          accessToken: resUser.accessToken,
+          refreshToken: resUser.refreshToken,
         };
       }
 
       return token;
     },
-    async session({ session, token, user }) {
-      session.user = { ...token?.user };
+    async session({ session, token }) {
+      if (token?.user) {
+        session.user = token.user;
+      }
+
       return session;
     },
   },

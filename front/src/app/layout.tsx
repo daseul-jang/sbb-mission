@@ -6,6 +6,9 @@ import Navbar from '@/components/ui/Navbar';
 import AuthProvider from '@/context/AuthProvider';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ['latin'] });
@@ -28,6 +31,12 @@ export default function RootLayout({
       <body
         className={`${inter.className} flex flex-col justify-start min-h-screen`}
       >
+        <ToastContainer
+          position='top-center'
+          autoClose={2000}
+          pauseOnHover={false}
+          pauseOnFocusLoss={false}
+        />
         <AuthProvider>
           <ReactQueryProvider>
             <header className='sticky top-0 bg-white border-b z-[999]'>
@@ -35,7 +44,7 @@ export default function RootLayout({
                 <Navbar />
               </div>
             </header>
-            <main className=''>{children}</main>
+            <main className='max-sm:max-w-screen-sm'>{children}</main>
           </ReactQueryProvider>
         </AuthProvider>
       </body>

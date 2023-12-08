@@ -5,8 +5,10 @@ import com.techit.missionsbb.user.domain.UserRole;
 import com.techit.missionsbb.user.repository.UserRepository;
 import com.techit.missionsbb.user.security.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,10 @@ public class UserService {
     }
 
     public User registerUser(final User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 회원입니다.");
+        }
+
         User encodingUser = User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))

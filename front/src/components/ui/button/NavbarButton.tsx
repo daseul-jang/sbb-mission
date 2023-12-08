@@ -13,7 +13,7 @@ export default function NavbarButton({
     <button
       tabIndex={0}
       className={`btn btn-ghost btn-circle hover:bg-amber-500 hover:text-white ${
-        type === 'avatar' && 'avatar mx-3'
+        type === 'avatar' && 'avatar ml-1 mr-2'
       }`}
       onClick={handleToggleDropdown}
     >

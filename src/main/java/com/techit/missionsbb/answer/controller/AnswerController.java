@@ -25,21 +25,35 @@ public class AnswerController {
     private final AnswerService answerService;
     private final UserService userService;
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAnswer(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                          @PathVariable("id") int id) {
+        Answer answerEntity = answerService.getAnswer(id);
+        answerService.delete(answerEntity, userPrincipal.getUsername());
+        return ResponseEntity.ok(new ResponseDto<>("삭제 성공"));
+    }
+
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<?> modifyAnswer(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                          @PathVariable("id") int id,
+                                          @RequestBody String content) {
+        Answer answerEntity = answerService.getAnswer(id);
+        answerEntity = answerService.modify(answerEntity.toBuilder().content(content).build(), userPrincipal.getUsername());
+        ResponseDto<AnswerDto> response = ResponseDto.<AnswerDto>builder().objectData(new AnswerDto(answerEntity)).build();
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/register/{id}")
     public ResponseEntity<?> createAnswer(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable("id") int id, @RequestBody String content) {
-        log.info("createAnswer id: {}", id);
-        log.info("createAnswer username: {}", userPrincipal.getUsername());
-        log.info("createAnswer content: {}", content);
-        ResponseDto<AnswerDto> response;
-        try {
-            Question questionEntity = questionService.getQuestion(id);
-            User userEntity = userService.getUser(userPrincipal.getUsername());
-            Answer answerEntity = answerService.create(questionEntity, content, userEntity);
-            response = ResponseDto.<AnswerDto>builder().objectData(new AnswerDto(answerEntity)).build();
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response = ResponseDto.<AnswerDto>builder().errorData(new ErrorResponseDto(-320, e.getMessage())).build();
-            return ResponseEntity.badRequest().body(response);
-        }
+        Question questionEntity = questionService.getQuestion(id);
+        User userEntity = userService.getUser(userPrincipal.getUsername());
+        Answer answerEntity = Answer.builder()
+                .question(questionEntity)
+                .author(userEntity)
+                .content(content)
+                .build();
+        answerEntity = answerService.create(answerEntity);
+        ResponseDto<AnswerDto> response = ResponseDto.<AnswerDto>builder().objectData(new AnswerDto(answerEntity)).build();
+        return ResponseEntity.ok(response);
     }
 }

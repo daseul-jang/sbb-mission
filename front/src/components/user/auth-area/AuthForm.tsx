@@ -12,6 +12,7 @@ import { useSignup } from '@/hooks/user';
 import { LoginInfo, SignupInfo } from '@/model/user';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 interface inputType {
   signin: LoginInfo;
@@ -37,7 +38,7 @@ export default function AuthForm({ auth }: AuthProps) {
   const type = userInput[auth];
 
   const [user, setUser] = useState<LoginInfo | SignupInfo>(type);
-  const { submitSignup, isPending } = useSignup(user);
+  const { submitSignup, isPending, isError, error } = useSignup(user);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
@@ -50,16 +51,28 @@ export default function AuthForm({ auth }: AuthProps) {
     e.preventDefault();
 
     if (auth === 'signin') {
-      console.log('handleSubmitSignup signin');
-      console.log(user);
-      await signIn('credentials', {
-        ...user,
-        redirect: true,
-        callbackUrl: '/',
-      });
+      try {
+        console.log('handleSubmitSignup signin');
+        const res = await signIn('credentials', {
+          ...user,
+          redirect: false,
+        });
+
+        console.log(res);
+
+        if (!res?.ok || res?.errorData) {
+          toast.error('로그인을 다시 시도해주세요.');
+          return;
+        }
+
+        toast.success(`${user.username}님 환영합니다! 🎉`);
+
+        setTimeout(() => {
+          router.replace('/');
+        }, 500);
+      } catch (err) {}
     } else if (auth === 'signup') {
       submitSignup();
-      router.push('/user/signin');
     }
   };
 

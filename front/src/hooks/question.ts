@@ -1,5 +1,6 @@
 import axios from '@/config/axios-config';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 type ReqQuestion = {
   subject: string;
@@ -37,6 +38,7 @@ export const useModifyQuestion = (
   id: string,
   { subject, content }: ReqQuestion
 ) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const {
     mutate: submitModifyQuestion,
@@ -47,7 +49,9 @@ export const useModifyQuestion = (
     onSuccess: () => {
       console.log('수정 성공');
       queryClient.invalidateQueries({ queryKey: ['question'] });
+      router.replace(`/question/${id}`);
     },
+    onError: (err) => console.log(err),
   });
 
   return { submitModifyQuestion, isPending, isError };
@@ -59,6 +63,7 @@ const fetchWrite = async ({ subject, content }: ReqQuestion) => {
 };
 
 export const useWriteQuestion = ({ subject, content }: ReqQuestion) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const {
     mutate: submitQuestion,
@@ -66,12 +71,29 @@ export const useWriteQuestion = ({ subject, content }: ReqQuestion) => {
     isError,
   } = useMutation({
     mutationFn: () => fetchWrite({ subject, content }),
-    onSuccess: () => {
+    onSuccess: (res) => {
       console.log('작성 성공');
+
+      if (res.data?.errorData) {
+        const { validError } = res.data?.errorData;
+        let message;
+
+        if (validError?.subject) message = validError?.subject;
+        if (validError?.content) message = validError?.content;
+        if (validError?.subject && validError?.content)
+          message = '제목과 내용은 비워둘 수 없어요!';
+
+        alert(message);
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ['questions'] });
+      router.replace('/');
+      return res.data.objectData;
     },
-    onError: () => {
-      console.log('에러!!!!!!!!!!!!!!!');
+    onError: (err) => {
+      console.log('작성 실패');
+      console.log(err);
     },
   });
 
@@ -80,11 +102,11 @@ export const useWriteQuestion = ({ subject, content }: ReqQuestion) => {
 
 /** 게시글 단건 조회 */
 const fetchQuestion = async (id: string) => {
-  const {
-    data: { objectData },
-  } = await axios.get(`/questions/${id}`);
+  const { data } = await axios.get(`/questions/${id}`);
 
-  return objectData;
+  if (!data.objectData) throw new Error('해당 게시글이 존재하지 않음');
+
+  return data.objectData;
 };
 
 export const useQuestion = (id: string) => {
@@ -104,6 +126,8 @@ export const useQuestion = (id: string) => {
 /** 페이징이 적용된 게시글 목록 */
 const fetchQuestions = async (page: number, size: number) => {
   const { data } = await axios.get(`/questions?page=${page}&size=${size}`);
+  //console.log(data);
+
   return data;
 };
 

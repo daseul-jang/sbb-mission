@@ -1,19 +1,23 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuestions } from '@/hooks/question';
 import { Question } from '@/model/question';
 import Pagination from '../ui/Pagination';
 import LoadingSpinnerCircle from '../ui/icon/LoadingSpinnerCircle';
 import { useRouter, useSearchParams } from 'next/navigation';
-import CommonException from '../error/CommonException';
+import CommonException from '../exception/CommonException';
 import { useSession } from 'next-auth/react';
 
 export default function BoardList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 0;
-  const { questions, isLoading, isError, queryError } = useQuestions(page, 10);
+  const [selectedSize, setSelectedSize] = useState(10);
+  const { questions, isLoading, isError, queryError } = useQuestions(
+    page,
+    selectedSize
+  );
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -39,19 +43,14 @@ export default function BoardList() {
   }
 
   if (isError || queryError) {
-    return <CommonException msg='잘못된 요청입니다 😅' />;
+    return <CommonException errorData={queryError} />;
   }
 
   const { errorData, pageData } = questions;
   console.log(questions);
 
-  if (errorData?.errorCode) {
-    return (
-      <CommonException
-        msg={errorData.errorMessage}
-        code={errorData.errorCode}
-      />
-    );
+  if (errorData) {
+    return <CommonException errorData={errorData} />;
   }
 
   if (questions.cause) {
@@ -59,23 +58,38 @@ export default function BoardList() {
   }
 
   const handlePageChange = (page: number) => {
-    router.push(`/?page=${page}&size=10`);
+    router.push(`/?page=${page}&size=${selectedSize}`);
+  };
+
+  const setSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSize(Number(e.target.value));
   };
 
   return (
     <div className='flex flex-col gap-3 px-3 mt-10'>
       <div className='flex justify-between'>
-        <h1 className='flex items-center text-2xl font-bold px-3'>
+        <h1 className='flex items-center text-2xl font-bold px-3 basis-3/5'>
           🙋‍♀️ 질문있어요!
         </h1>
-        {user && (
-          <button
-            className='btn'
-            onClick={() => router.push('/question/write')}
+        <div className='flex justify-end gap-3 basis-2/5'>
+          <select
+            className='outline-none focus:outline-amber-500'
+            value={selectedSize}
+            onChange={setSize}
           >
-            질문하기
-          </button>
-        )}
+            <option value='2'>2개</option>
+            <option value='5'>5개</option>
+            <option value='10'>10개</option>
+          </select>
+          {user && (
+            <button
+              className='btn'
+              onClick={() => router.push('/question/write')}
+            >
+              질문하기
+            </button>
+          )}
+        </div>
       </div>
       <div className='flex flex-col items-center gap-14 mb-16'>
         <div className='overflow-x-auto w-full'>
@@ -98,7 +112,7 @@ export default function BoardList() {
                     <button
                       onClick={() =>
                         router.push(
-                          `/question/${question.id}?page=${page}&size=10`
+                          `/question/${question.id}?page=${page}&size=${selectedSize}`
                         )
                       }
                     >

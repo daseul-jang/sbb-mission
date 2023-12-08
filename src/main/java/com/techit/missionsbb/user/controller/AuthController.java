@@ -53,11 +53,9 @@ public class AuthController {
 
     @PostMapping("/reissue-access-token")
     public ResponseEntity<?> reissueAccessToken(@RequestBody String refreshToken) {
-        log.info("reissueAccessToken: {}", refreshToken);
         ResponseDto<JwtAuthResponseDto> response;
         try {
             response = ResponseDto.<JwtAuthResponseDto>builder().objectData(authService.newAccessToken(refreshToken)).build();
-            log.info("뉴액세스토큰: {}", response.getObjectData().getAccessToken());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response = ResponseDto.<JwtAuthResponseDto>builder().errorData(new ErrorResponseDto(-160, e.getMessage())).build();

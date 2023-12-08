@@ -27,10 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.info("doFilterInternal");
-            log.info(request.getHeader("Authorization"));
             String accessToken = tokenProvider.getBearerToken(request);
-            log.info("doFilterInternal accessToken: {}", accessToken);
 
             AbstractAuthenticationToken authentication = new AnonymousAuthenticationToken(
                     "anonymous", Optional.empty(), Collections.singletonList(new SimpleGrantedAuthority("anonymous"))
@@ -41,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.error("{}: {}", "로그인 실패", e.getMessage());
+            log.error("{}: {}", "토큰 인증 실패", e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             return;
         }
